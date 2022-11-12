@@ -12,10 +12,7 @@
     define('DB_USER', 'thor');
     define('DB_PASSWORD', 'godofthunder');
 
-
     // password_hash($password, PASSWORD_DEFAULT), salt is included in this function
-        
-
 
     try{
         $db=new PDO(DB_DSN, DB_USER, DB_PASSWORD);
