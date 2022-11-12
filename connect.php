@@ -5,7 +5,7 @@
  * Course: Web Development - 2008 (228566)
  * Assignment: Project
  * Created: Nov 2, 2022
- * Updated: Nov 11, 2022 
+ * Updated: Nov 12, 2022 
  ******************************************/ 
 
     define('DB_DSN', 'mysql:host=localhost;dbname=_SERVER;charset=utf8');
