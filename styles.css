@@ -6,15 +6,22 @@
  * Created: Nov 12, 2022
  * Updated: Nov 12, 2022 
  ******************************************/ 
+body{
+    background-color: #f6e5dd;
+} 
 
- ul{
+ul{
     list-style: none;    
- }
+}
 
- .top-nav-li{
+.top-nav-li{
     display: inline-block;
- }
+}
 
- .top-nav-search{
+.top-nav-search{
     display: inline-block;
- }
+}
+
+.top-logo{
+    width: 7em;
+}
