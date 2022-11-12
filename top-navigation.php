@@ -22,6 +22,7 @@
         href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" 
         integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" 
         crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css" type="text/css">
     <title>Document</title>
 </head>
 <body>
@@ -35,8 +36,8 @@
             <div class="col-sm-6">            
                 <ul>
                     <li class="top-nav-li"><a href="index.php">Home</a></li>        
-                    <li class="top-nav-li"><a href="about.html">About</a></li>
-                    <li class="top-nav-li"><a href="contact.html">Contact</a></li>        
+                    <li class="top-nav-li"><a href="about.php">About</a></li>
+                    <li class="top-nav-li"><a href="contact.php">Contact</a></li>        
                     <li class="top-nav-li"><a href="login.php">Login</a></li>        
                     <li class="top-nav-li">
                         <form action="#" class="top-nav-search">
