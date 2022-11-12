@@ -8,5 +8,13 @@
  ******************************************/ 
 
  ul{
-    list-style: none;
+    list-style: none;    
+ }
+
+ .top-nav-li{
+    display: inline-block;
+ }
+
+ .top-nav-search{
+    display: inline-block;
  }
