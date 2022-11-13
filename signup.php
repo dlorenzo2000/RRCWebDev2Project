@@ -37,7 +37,7 @@
         $stm: execute();
 
         header("Location: login.php");
-        exit;
+        die;
     }
 
     if($_POST && empty($_POST['first-name']) || empty($_POST['last-name'])
