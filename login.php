@@ -8,19 +8,8 @@
  * Updated: Nov 12, 2022 
  ******************************************/ 
 
-    require('connect.php');
     require('top-navigation.php');
-    define('ADMIN_LOGIN', 'thor');
-    define('ADMIN_PASSWORD', 'godofthunder');
 
-    if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW'])
-        || ($_SERVER['PHP_AUTH_USER'] != ADMIN_LOGIN)
-        || ($_SERVER['PHP_AUTH_PW'] != ADMIN_PASSWORD)){
-
-        header('HTTP/1.1 401 Unauthorized');
-        header('WWW-Authenticate: Basic realm="Our Blog"');
-        exit("Access Denied: Username and password required.");
-    }        
 ?>
 
 <!DOCTYPE html>
@@ -34,14 +23,31 @@
         integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" 
         crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css" type="text/css"> 
-    <title>Login</title>
+    <title>Login page</title>
 </head>
-<body> 
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" 
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" 
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" 
-        integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" 
-        crossorigin="anonymous"></script>      
+<body>    
+    <div class="container">
+        <div class="row">
+            <form method="post">    
+            <br /> 
+                <br /> 
+                <br />         
+                <h2>Login</h2> 
+                <br />      
+                <label for="username">Username</label>
+                <input type="text" name="username">
+                <br />
+                <br />
+                <label for="password">Password</label>
+                <input type="text" name="password">       
+                <br />
+                <br />
+                <button type="submit" class="btn btn-secondary">Login</button> 
+                <br />
+                <br />
+                <a href="signup.php">Click here to sign up</a>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

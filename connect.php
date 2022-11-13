@@ -8,16 +8,16 @@
  * Updated: Nov 12, 2022 
  ******************************************/ 
 
-    define('DB_DSN', 'mysql:host=localhost;dbname=_server;charset=utf8');
-    define('DB_USER', 'thor');
-    define('DB_PASSWORD', 'godofthunder');
+    $db_dsn = 'mysql:host=localhost;dbname=_server;charset=utf8';
+    $db_usr = 'root';
+    $db_pwd = '';
 
     // password_hash($password, PASSWORD_DEFAULT), salt is included in this function
  
     try{
-        $db=new PDO(DB_DSN, DB_USER, DB_PASSWORD);
+        $db = new PDO($db_dsn, $db_usr, $db_pwd);
     }catch(PDOexception $e){
         print("Error" . $e->getMessage());
-        die();
+        die("Failed to connect to the database.");
     }
 ?> 
