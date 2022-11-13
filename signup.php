@@ -9,8 +9,7 @@
  ******************************************/ 
 
     require('connect.php');
-    //require('top-navigation.php');
-    //require('library.php');
+    include('top-navigation.php');
  
     //session_start();
 
@@ -91,9 +90,9 @@
                 <br />
                 <br />
                 <label for="pwd">Password</label>
-                <input type="text" name="pwd">       
+                <input type="password" name="pwd">       
                 <br />
-                <br />
+                <br />                
                 <button type="submit" class="btn btn-secondary" id="submit">Register</button> 
                 <br />
                 <br />

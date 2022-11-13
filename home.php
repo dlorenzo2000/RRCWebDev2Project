@@ -5,15 +5,15 @@
  * Course: Web Development - 2008 (228566)
  * Assignment: Project
  * Created: Nov 12, 2022
- * Updated: Nov 12, 2022 
+ * Updated: Nov 13, 2022 
  ******************************************/ 
 
     require('connect.php');
-    require('top-navigation.php');
     require('library.php');
 
-    $usr_dat = CheckLogin($db);
+    session_start();    
 
+    $usr_dat = CheckLogin($db);
 ?>
 
 <!DOCTYPE html>
@@ -27,9 +27,13 @@
         integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" 
         crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css" type="text/css"> 
-    <title>Document</title>
+    <title>Home</title>
 </head>
 <body>
-    
+    <div class="container">
+        <p>            
+            Hi <?= $usr_dat['first_name'] ?>. Welcome to the home page!
+        </p>
+    </div>
 </body>
 </html>

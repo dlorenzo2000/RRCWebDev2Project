@@ -11,28 +11,31 @@
  ******************************************/ 
 
     require('connect.php');
-    require('top-navigation.php');
-    require('library.php');
+    require('top-navigation.php'); 
 
+    // This function checks to see if a user is logged in succesfuly and
+    // creates a SESSION variable if the session is created. 
+    // PARAMETER: $db is a connection to the database 
     function CheckLogin($db){
-        if(isset($_SESSION['userid'])){
-            $id = $_SESSION['userid'];
+        if(isset($_SESSION['username'])){
+            $username = $_SESSION['username'];
 
-            $qry = "SELECT * FROM Users WHERE userid = '$id' LIMIT 1";
-            
+            $qry = "SELECT * FROM User WHERE username = :username LIMIT 1";
+        
             $stm = $db->prepare($qry);
-
+    
+            $stm->bindvalue('username', $username, PDO::PARAM_STR);
+            
             $stm->execute();
-
-            if($dat.count > 0)
-            {
+            
+            if($stm->rowCount() > 0){
                 $usr_dat = $stm->fetch();
                 return $usr_dat;
             }
         }
         else{
             //redirect to login
-            header("Location: login.php");
+            //header("Location: login.php");
             die;
         }
     }

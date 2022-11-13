@@ -8,4 +8,12 @@
  * Updated: Nov 12, 2022 
  ******************************************/ 
 
- ?>
+    session_start();
+
+    if(isset($_SESSION['username'])){
+        unset($_SESSION['username']);
+    }
+
+    header("Location: index.php");
+    die;
+?>
