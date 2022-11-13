@@ -1,12 +1,13 @@
 <?php
-/****************************************** 
+/****************************************************************************** 
  * Name: Dean Lorenzo
  * Student number: 0367298
  * Course: Web Development - 2008 (228566)
- * Assignment: Project
- * Created: Nov 2, 2022
+ * Assignment: Final Project
+ * Created: Nov 12, 2022
  * Updated: Nov 12, 2022 
- ******************************************/ 
+ * Purpose: Handles the connection to the database.
+ *****************************************************************************/
 
     $db_dsn = 'mysql:host=localhost;dbname=_server;charset=utf8';
     $db_usr = 'root';

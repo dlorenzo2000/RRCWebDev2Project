@@ -1,14 +1,14 @@
 <?php
-/****************************************** 
+/****************************************************************************** 
  * Name: Dean Lorenzo
  * Student number: 0367298
  * Course: Web Development - 2008 (228566)
- * Assignment: Project
+ * Assignment: Final Project
  * Created: Nov 12, 2022
  * Updated: Nov 12, 2022 
- * Purpose: This library stores the funcitons
- * to be re-used by the Foodzagram website.
- ******************************************/ 
+ * Purpose: This library stores the funcitons to be re-used by the Foodzagram 
+ *          website.
+ *****************************************************************************/
 
     require('connect.php');
     require('top-navigation.php'); 
