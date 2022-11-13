@@ -8,7 +8,9 @@
  * Updated: Nov 12, 2022 
  ******************************************/ 
 
-    //require('connect.php');
+    session_start();
+
+    require('connect.php');
     require('top-navigation.php');
 ?>
 

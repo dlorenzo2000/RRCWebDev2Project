@@ -8,7 +8,6 @@
  * Updated: Nov 12, 2022 
  ******************************************/ 
 
-
  ?>
 
 <!DOCTYPE html>
@@ -28,17 +27,21 @@
 <body>
     <div class="container top-nav">
         <div class="row top-nav-links align-item-center">
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <a href="index.php">
                     <img src="images/foodzagram-logo-sm.png" class="top-logo"/>
                 </a>
             </div>    
-            <div class="col-sm-6">            
+            <div class="col-sm-8">            
                 <ul>
                     <li class="top-nav-li"><a href="index.php">Home</a></li>        
                     <li class="top-nav-li"><a href="about.php">About</a></li>
                     <li class="top-nav-li"><a href="contact.php">Contact</a></li>        
-                    <li class="top-nav-li"><a href="login_form.php">Login</a></li>        
+                    <li class="top-nav-li"><a href="login.php">Login</a></li>    
+
+                    <li class="top-nav-li">HELLO, USERNAME</li>    
+                        
+                    <li class="top-nav-li"><a href="logout.php">logout</a></li>        
                     <li class="top-nav-li">
                         <form action="#" class="top-nav-search">
                             <input type="text">
@@ -46,8 +49,7 @@
                         <a href="search.php"><button class="btn btn-secondary">
                             Search</button>
                         </a>
-                    </li>
-                   
+                    </li>                   
                 </ul>
             </div>
         </div>        
