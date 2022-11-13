@@ -34,8 +34,9 @@
             }
         }
         else{
-            //redirect to login
-            //header("Location: login.php");
+            // redirect to login if user tries to access pages that
+            // only registered users are allowed
+            header("Location: login.php");
             die;
         }
     }
