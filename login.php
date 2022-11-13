@@ -7,9 +7,47 @@
  * Created: Nov 12, 2022
  * Updated: Nov 12, 2022 
  ******************************************/ 
+ 
+    require('top-navigation.php'); 
+    require('connect.php');
 
-    require('top-navigation.php');
+    session_start();
 
+    if($_POST && !empty($_POST['username']) && !empty($_POST['pwd'])){
+         
+        $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $pwd = filter_input(INPUT_POST, 'pwd', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        
+        $qry = "SELECT * FROM User WHERE username = :username LIMIT 1";
+        
+        $stm = $db->prepare($qry);
+
+        $stm->bindvalue('username', $username, PDO::PARAM_STR);
+        
+        $stm->execute();
+
+        if($stm->rowCount() > 0 ){            
+            $dat = $stm->fetch();
+            if($dat['pwd'] === $pwd){
+                echo "inside the line 29 code";
+                $_SESSION['username'] = $dat['username'];
+                header("Location: home.php");
+                die;                
+            }
+            else{
+                echo "Invalid password. Re-enter your password.";
+            }
+        }     
+        echo "outside the if statement of login";  
+    }
+
+    if($_POST && (empty($_POST['first-name']) || empty($_POST['last-name']))
+        || empty($_POST['email']) || empty($_POST['username']) 
+        || empty($_POST['pwd'])){
+
+        //////////////// TO DO
+        echo "Please enter all fields.";
+    }
 ?>
 
 <!DOCTYPE html>
@@ -28,8 +66,8 @@
 <body>    
     <div class="container">
         <div class="row">
-            <form method="post">    
-            <br /> 
+            <form method="post" action="login.php">    
+                <br /> 
                 <br /> 
                 <br />         
                 <h2>Login</h2> 
@@ -38,8 +76,8 @@
                 <input type="text" name="username">
                 <br />
                 <br />
-                <label for="password">Password</label>
-                <input type="text" name="password">       
+                <label for="pwd">Password</label>
+                <input type="password" name="pwd">       
                 <br />
                 <br />
                 <button type="submit" class="btn btn-secondary">Login</button> 

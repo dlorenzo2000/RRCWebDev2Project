@@ -5,13 +5,14 @@
  * Course: Web Development - 2008 (228566)
  * Assignment: Project
  * Created: Nov 12, 2022
- * Updated: Nov 12, 2022 
+ * Updated: Nov 13, 2022 
  ******************************************/ 
 
  ?>
 
 <!DOCTYPE html>
 <html lang="en">
+   
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -36,12 +37,10 @@
                 <ul>
                     <li class="top-nav-li"><a href="index.php">Home</a></li>        
                     <li class="top-nav-li"><a href="about.php">About</a></li>
-                    <li class="top-nav-li"><a href="contact.php">Contact</a></li>        
-                    <li class="top-nav-li"><a href="login.php">Login</a></li>    
-
-                    <li class="top-nav-li">HELLO, USERNAME</li>    
-                        
-                    <li class="top-nav-li"><a href="logout.php">logout</a></li>        
+                    <li class="top-nav-li"><a href="contact.php">Contact</a></li>                           
+                    <li class="top-nav-li"><a href="signup.php">Signup</a></li>         
+                    <li class="top-nav-li"><a href="login.php">Login</a></li>                            
+                    <li class="top-nav-li"><a href="logout.php">Logout</a></li>        
                     <li class="top-nav-li">
                         <form action="#" class="top-nav-search">
                             <input type="text">
