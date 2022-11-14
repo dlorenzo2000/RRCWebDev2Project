@@ -32,6 +32,7 @@
             if($dat['pwd'] === $pwd){
                 echo "inside the line 29 code";
                 $_SESSION['username'] = $dat['username'];
+                $_SESSION['userid'] = $dat['userid'];
                 header("Location: home.php");
                 die;                
             }
@@ -65,6 +66,7 @@
     <title>Login page</title>
 </head>
 <body>    
+    <hr>
     <div class="container">
         <div class="row">
             <form method="post" action="login.php">    
