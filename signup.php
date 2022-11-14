@@ -12,7 +12,7 @@
     require('connect.php');
     include('top-navigation.php');
  
-    //session_start();
+    session_start();
 
     if($_POST && !empty($_POST['first-name']) && !empty($_POST['last-name'])
         && !empty($_POST['email']) && !empty($_POST['username']) 
@@ -65,6 +65,7 @@
     <title>Sign up page</title>
 </head>
 <body>    
+    <hr>
     <div class="container">
         <div class="row">
             <form method="post" action="signup.php">    

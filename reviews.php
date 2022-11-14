@@ -16,16 +16,18 @@
 
     // query the db for all the posts
     $qry = "SELECT * FROM post";    
-    $stm = $db->prepare($qry);
-    $stm->execute();
-
+    
     // query the restaurants that have review posts
     $qryRestaurant = "SELECT * 
                       FROM restaurant 
                       JOIN post 
                       WHERE post.restaurantid = restaurant.restaurantid";
+                     
+    $stm = $db->prepare($qry);
     $stmRestaurant = $db->prepare($qryRestaurant);
+    
     $stmRestaurant->execute();
+    $stm->execute();
 ?>
 
 <!DOCTYPE html>
@@ -37,16 +39,24 @@
     <title>Reviews</title>
 </head>
 <body>
-    <div class="container">        
-        <div class="row">  
+    <hr>
+    <div class="container">   
+        <div class="row">
+            <div class="col">
+                <button onclick="location.href='post_review.php';" 
+                    class="btn btn-secondary">Write a review</button>
+            </div>
+        </div>     
+        <div class="row">              
             <?php if(($stm->rowCount() > 0) && $stmRestaurant->rowCount() > 0): ?>
                 <ul>                
-                    <?php while($dat = $stm->fetch() 
-                        && $datRestaurant = $stmRestaurant->fetch()): ?>
+                    <?php while($dat = $stm->fetch()): ?>
+                        <?php $datRestaurant = $stmRestaurant->fetch() ?>                        
                         <li>
-                            <h2><?= $datRestaurant['restaurant_name'] ?></h2>                            
-                            <h3><?= $dat['post_title'] ?></h3>
-                            <p><?= $dat['post_content'] ?></p>
+                            <h5><?= $datRestaurant['restaurant_name'] ?></h5>                            
+                            <h6><?= $dat['post_title'] ?> - <?= $dat['restaurant_rating'] ?>/10</h6>
+                            <h6>Posted on <?= date('F d, Y h:m A', strtotime($dat['created_date'])) ?></h6>
+                            <p><?= $dat['post_content'] ?></p>        
                         </li>
                     <?php endwhile ?>
                 </ul>

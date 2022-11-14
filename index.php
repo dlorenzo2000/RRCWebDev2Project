@@ -29,6 +29,7 @@
     <title>Foodzagram</title>
 </head>
 <body>
+    <hr>
     <div class="container">
         <h1>Explore</h1>
         <div class="row">

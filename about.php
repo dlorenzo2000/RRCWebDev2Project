@@ -27,6 +27,7 @@
     <title>About Foodzagram</title>
 </head>
 <body>
+    <hr>
     <p>
         We are an ethically sourced company that has wholesome family values
         that have been engrained in our beliefs and upbring from watching 

@@ -27,8 +27,10 @@
             $stm->bindvalue('username', $username, PDO::PARAM_STR);
             
             $stm->execute();
+
             
-            if($stm->rowCount() > 0){
+            
+            if($stm->rowCount() > 0){                
                 $usr_dat = $stm->fetch();
                 return $usr_dat;
             }

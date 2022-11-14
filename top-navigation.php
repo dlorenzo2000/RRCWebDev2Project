@@ -38,10 +38,8 @@
                 <ul>
                     <li class="top-nav-li"><a href="index.php">Home</a></li>        
                     <li class="top-nav-li"><a href="about.php">About</a></li>
-                    <li class="top-nav-li"><a href="contact.php">Contact</a></li>                           
-                    <li class="top-nav-li"><a href="signup.php">Signup</a></li>         
-                    <li class="top-nav-li"><a href="login.php">Login</a></li>                            
-                    <li class="top-nav-li"><a href="logout.php">Logout</a></li>        
+                    <li class="top-nav-li"><a href="contact.php">Contact</a></li>                                         
+                    <li class="top-nav-li"><a href="logout.php">Logout</a></li>
                     <li class="top-nav-li">
                         <form action="#" class="top-nav-search">
                             <input type="text">
@@ -49,7 +47,9 @@
                         <a href="search.php"><button class="btn btn-secondary">
                             Search</button>
                         </a>
-                    </li>                   
+                    </li> 
+                    <button onclick="location.href='login.php';" 
+                        class="btn btn-secondary" >Login/Sign Up</button>                      
                 </ul>
             </div>
         </div>        

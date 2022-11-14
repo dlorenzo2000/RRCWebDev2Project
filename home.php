@@ -31,6 +31,7 @@
     <title>Home</title>
 </head>
 <body>
+    <hr>
     <div class="container">
         <p>            
             Hi <?= $usr_dat['first_name'] ?>. Welcome to the home page!

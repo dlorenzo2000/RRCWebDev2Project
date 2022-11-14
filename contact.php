@@ -26,6 +26,7 @@
     <title>Contact</title>
 </head>
 <body>
+    <hr>
     <p>
         We are located at 123 Main St. Wpg, MB R9X 9XZ. Our phone number 
         is (204)555-1234. 
