@@ -5,14 +5,13 @@
  * Course: Web Development - 2008 (228566)
  * Assignment: Final Project
  * Created: Nov 12, 2022
- * Updated: Nov 12, 2022 
+ * Updated: Nov 15, 2022 
  * Purpose: Manage the login to the website. 
  *****************************************************************************/
  
-    require('top-navigation.php'); 
-    require('connect.php');
-
     session_start();
+    require('connect.php');
+    require('top-navigation.php');
 
     if($_POST && !empty($_POST['username']) && !empty($_POST['pwd'])){
          
@@ -29,8 +28,7 @@
 
         if($stm->rowCount() > 0 ){            
             $dat = $stm->fetch();
-            if($dat['pwd'] === $pwd){
-                echo "inside the line 29 code";
+            if($dat['pwd'] === $pwd){ 
                 $_SESSION['username'] = $dat['username'];
                 $_SESSION['userid'] = $dat['userid'];
                 header("Location: home.php");
@@ -39,16 +37,16 @@
             else{
                 echo "Invalid password. Re-enter your password.";
             }
-        }     
-        echo "outside the if statement of login";  
-    }
-
-    if($_POST && (empty($_POST['first-name']) || empty($_POST['last-name']))
-        || empty($_POST['email']) || empty($_POST['username']) 
-        || empty($_POST['pwd'])){
-
-        //////////////// TO DO
-        echo "Please enter all fields.";
+        }  
+        
+        ///////////////if($_SERVER['REQUEST_METHOD'] === "POST"){
+            if($_POST && empty($_POST['username'])){
+                $username_error = "* Please your username.";
+            }
+            if($_POST && empty($_POST['pwd'])){
+                $password_error1 = "* Please your password.";
+            }      
+       ///////////// }
     }
 ?>
 
@@ -77,6 +75,9 @@
                 <br />      
                 <label for="username">Username</label>
                 <input type="text" name="username">
+
+                <span><?php if(isset($username_error)) echo $username_error; ?></span>
+
                 <br />
                 <br />
                 <label for="pwd">Password</label>
