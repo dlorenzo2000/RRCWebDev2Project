@@ -9,46 +9,65 @@
  * Purpose: Manage the sign up process.
  *****************************************************************************/
 
+    session_start();
     require('connect.php');
     include('top-navigation.php');
- 
-    session_start();
 
     if($_POST && !empty($_POST['first-name']) && !empty($_POST['last-name'])
         && !empty($_POST['email']) && !empty($_POST['username']) 
-        && !empty($_POST['pwd'])){
+        && !empty($_POST['pwd1']) && !empty($_POST['pwd2'])){
         
         $first_name = filter_input(INPUT_POST, 'first-name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $last_name = filter_input(INPUT_POST, 'last-name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $pwd = filter_input(INPUT_POST, 'pwd', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        
-        $qry = "INSERT INTO User (first_name, last_name, email, username, pwd) 
+        $pwd1 = filter_input(INPUT_POST, 'pwd1', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $pwd2 = filter_input(INPUT_POST, 'pwd2', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+        if($pwd1 === $pwd2){
+            $pwd = $pwd1;
+
+            $qry = "INSERT INTO User (first_name, last_name, email, username, pwd) 
                 VALUES (:first_name, :last_name, :email, :username, :pwd)";
         
-        $stm = $db->prepare($qry);
+            $stm = $db->prepare($qry);
 
-        $stm->bindvalue(':first_name', $first_name, PDO::PARAM_STR);
-        $stm->bindvalue(':last_name', $last_name, PDO::PARAM_STR);
-        $stm->bindvalue(':email', $email, PDO::PARAM_STR);
-        $stm->bindvalue(':username', $username, PDO::PARAM_STR);
-        $stm->bindvalue(':pwd', $pwd, PDO::PARAM_STR);
-        
-        $stm->execute();
+            $stm->bindvalue(':first_name', $first_name, PDO::PARAM_STR);
+            $stm->bindvalue(':last_name', $last_name, PDO::PARAM_STR);
+            $stm->bindvalue(':email', $email, PDO::PARAM_STR);
+            $stm->bindvalue(':username', $username, PDO::PARAM_STR);
+            $stm->bindvalue(':pwd', $pwd, PDO::PARAM_STR);
+            
+            $stm->execute();
 
-        header("Location: login.php");
-        die;
+            header("Location: login.php");
+            die;
+        }  
+        else{
+                $password_error2 = "* The passwords do not match";            
+        }      
     }
 
-    if($_POST && empty($_POST['first-name']) || empty($_POST['last-name'])
-        || empty($_POST['email']) || empty($_POST['username']) 
-        || empty($_POST['pwd'])){
-
-        //////////////// TO DO
-        echo "Please enter all fields.";
+    if($_SERVER['REQUEST_METHOD'] === "POST"){
+        if($_POST && empty($_POST['first-name'])){
+            $first_name_error = "* Please enter your first name.";
+        }
+        if($_POST && empty($_POST['last-name'])){
+            $last_name_error = "* Please enter your last name.";
+        }
+        if($_POST && empty($_POST['email'])){
+            $email_error = "* Please enter your email address.";
+        }
+        if($_POST && empty($_POST['username'])){
+            $username_error = "* Please enter a username.";
+        }
+        if($_POST && empty($_POST['pwd1'])){
+            $password_error1 = "* Please enter a password.";
+        }
+        if($_POST && empty($_POST['pwd2'])){
+            $password_error2 = "* Please re-enter the password.";
+        }
     }
-
 ?>
 
 <!DOCTYPE html>
@@ -73,28 +92,43 @@
                 <br /> 
                 <br />         
                 <h2>Sign up</h2> 
-
                 <br />
                 <label for="first-name">First name</label>
-                <input type="text" name="first-name">
+                <input type="text" name="first-name" 
+                    value="<?php if(isset($_POST['first-name'])) echo $_POST['first-name']; ?>">
+                <span><?php if(isset($first_name_error)) echo $first_name_error; ?></span>                
                 <br />
                 <br />
                 <label for="last-name">Last name</label>
-                <input type="text" name="last-name">
+                <input type="text" name="last-name"
+                    value="<?php if(isset($_POST['last-name'])) echo $_POST['last-name']; ?>">
+                <span><?php if(isset($last_name_error)) echo $last_name_error; ?></span>
                 <br />
                 <br />
                 <label for="email">Email</label>
-                <input type="text" name="email">
+                <input type="email " name="email" 
+                    value="<?php if(isset($_POST['email'])) echo $_POST['email']; ?>">
+                <span><?php if(isset($email_error)) echo $email_error; ?></span>
                 <br />
                 <br />     
                 <label for="username">Username</label>
-                <input type="text" name="username">
+                <input type="text" name="username"
+                    value="<?php if(isset($_POST['username'])) echo $_POST['username']; ?>">
+                <span><?php if(isset($username_error)) echo $username_error; ?></span>
                 <br />
                 <br />
-                <label for="pwd">Password</label>
-                <input type="password" name="pwd">       
+                <label for="pwd1">Password</label>
+                <input type="password" name="pwd1"
+                    value="<?php if(isset($_POST['pwd1'])) echo $_POST['pwd1']; ?>">   
+                <span><?php if(isset($password_error1)) echo $password_error1; ?></span>      
                 <br />
-                <br />                
+                <br />        
+                <label for="pwd2">Re-enter password</label>
+                <input type="password" name="pwd2"
+                    value="<?php if(isset($_POST['pwd2'])) echo $_POST['pwd2']; ?>">
+                <span><?php if(isset($password_error2)) echo $password_error2; ?></span>   
+                <br />
+                <br />           
                 <button type="submit" class="btn btn-secondary" id="submit">Register</button> 
                 <br />
                 <br />

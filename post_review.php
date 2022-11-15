@@ -5,14 +5,14 @@
  * Course: Web Development - 2008 (228566)
  * Assignment: Final Project
  * Created: Nov 2, 2022
- * Updated: Nov 13, 2022 
+ * Updated: Nov 14, 2022 
  * Purpose: The main landing page for the site.
  *****************************************************************************/
 
     session_start();
-
-    require('connect.php'); 
-    require('library.php');
+    require('connect.php');
+    require('top-navigation.php');    
+    require('library.php');  
 
     // checks to see if the user is logged in and redirects to login if not
     if(!($usr_dat = CheckLogin($db))){
@@ -39,13 +39,6 @@
         $stmUser->execute();
         $stmRestaurant->execute();
         $stmCategory->execute();
-
-        // insert data into the database with the following code
-        /******************** 
-        if($_POST && !empty($_POST['post_title']) && !empty($_POST['post_content']) 
-            && !empty($_POST['restaurant_rating']) && !empty($_POST['restaurantid'])
-            && !empty($_POST['categoryid'])){
-***********************/
 
         if($_POST){
 

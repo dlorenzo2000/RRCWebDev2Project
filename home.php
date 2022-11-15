@@ -9,10 +9,11 @@
  * Purpose: Home page for registered users that are logged in.
  *****************************************************************************/
 
+    session_start();
+    
     require('connect.php');
-    require('library.php');
-
-    session_start();    
+    require('top-navigation.php'); 
+    require('library.php');  
 
     $usr_dat = CheckLogin($db);
 ?>

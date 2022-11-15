@@ -11,7 +11,6 @@
  *****************************************************************************/
 
     require('connect.php');
-    require('top-navigation.php'); 
 
     // This function checks to see if a user is logged in succesfuly and
     // creates a SESSION variable if the session is created. 
@@ -26,9 +25,7 @@
     
             $stm->bindvalue('username', $username, PDO::PARAM_STR);
             
-            $stm->execute();
-
-            
+            $stm->execute();            
             
             if($stm->rowCount() > 0){                
                 $usr_dat = $stm->fetch();

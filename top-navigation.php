@@ -9,6 +9,10 @@
  * Purpose: Top navigation bar that is found on every page.
  *****************************************************************************/
 
+    if(isset($_SESSION['username'])){
+        $logout_link = "Lerggggout";
+    }
+
  ?>
 
 <!DOCTYPE html>
@@ -38,8 +42,8 @@
                 <ul>
                     <li class="top-nav-li"><a href="index.php">Home</a></li>        
                     <li class="top-nav-li"><a href="about.php">About</a></li>
-                    <li class="top-nav-li"><a href="contact.php">Contact</a></li>                                         
-                    <li class="top-nav-li"><a href="logout.php">Logout</a></li>
+                    <li class="top-nav-li"><a href="contact.php">Contact</a></li>      
+                    <li class="top-nav-li"><a href="logout.php"><?php if(isset($logout_link)) echo $logout_link; ?> </a></li>
                     <li class="top-nav-li">
                         <form action="#" class="top-nav-search">
                             <input type="text">
