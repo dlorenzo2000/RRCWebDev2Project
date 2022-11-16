@@ -6,18 +6,18 @@
  * Assignment: Final Project
  * Created: Nov 15, 2022
  * Updated: Nov 16, 2022 
- * Purpose: Reviews page displays the reviews posted by a logged in user.
+ * Purpose: Displays all views for admin
  *****************************************************************************/
 
     session_start();
 
-    require('connect.php'); 
+    require('connect.php');
+    require('header.php');
 
-    require_once('header.php');
     $userid =  $_SESSION['userid'];
 
     // query the db for all the posts
-    $qry = "SELECT * FROM post WHERE userid = $userid";    
+    $qry = "SELECT * FROM post";    
     
     // query the restaurants that have review posts
     $qryRestaurant = "SELECT * 
@@ -72,5 +72,6 @@
             <?php endif ?>
         </div>
     </div>
+    <?php require_once('footer.php'); ?>
 </body>
 </html>

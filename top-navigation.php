@@ -39,27 +39,29 @@
                     <img src="images/foodzagram-logo-sm.png" class="top-logo"/>
                 </a>
             </div>    
-            <div class="col-sm-8">            
-                <ul>
-                    <li class="top-nav-li"><a href="index.php">Home</a></li>        
-                    <li class="top-nav-li"><a href="about.php">About</a></li>
-                    <li class="top-nav-li"><a href="contact.php">Contact</a></li>    
-                    <li class="top-nav-li"><a href="my_reviews.php">
-                        <?php if(isset($logout_link)) echo $my_reviews_link; ?> </a></li>    
-                      
-                    <li class="top-nav-li"><a href="logout.php">
-                        <?php if(isset($logout_link)) echo $logout_link; ?> </a></li>
-                    <li class="top-nav-li">
-                        <form action="#" class="top-nav-search">
-                            <input type="text">
-                        </form>
-                        <a href="search.php"><button class="btn btn-secondary">
-                            Search</button>
-                        </a>
-                    </li> 
-                    <button onclick="location.href='login.php';" 
-                        class="btn btn-secondary" >Login/Sign Up</button>                      
-                </ul>
+            <div class="col-sm-8">  
+                <nav>      
+                    <ul>
+                        <li class="top-nav-li"><a href="index.php">Home</a></li>        
+                        <li class="top-nav-li"><a href="about.php">About</a></li>
+                        <li class="top-nav-li"><a href="contact.php">Contact</a></li>    
+                        <li class="top-nav-li"><a href="my_reviews.php">
+                            <?php if(isset($logout_link)) echo $my_reviews_link; ?> </a></li>    
+                        
+                        <li class="top-nav-li"><a href="logout.php">
+                            <?php if(isset($logout_link)) echo $logout_link; ?> </a></li>
+                        <li class="top-nav-li">
+                            <form action="#" class="top-nav-search">
+                                <input type="text">
+                            </form>
+                            <a href="search.php"><button class="btn btn-secondary">
+                                Search</button>
+                            </a>
+                        </li> 
+                        <button onclick="location.href='login.php';" 
+                            class="btn btn-secondary" >Login/Sign Up</button>                      
+                    </ul>
+                </nav>   
             </div>
         </div>        
     </div>          

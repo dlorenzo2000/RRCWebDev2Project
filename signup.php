@@ -11,7 +11,7 @@
 
     session_start();
     require('connect.php');
-    include('top-navigation.php');
+    include('header.php');
 
     if($_SERVER['REQUEST_METHOD'] === "POST"){
         if($_POST && empty($_POST['first-name'])){
@@ -136,5 +136,6 @@
             </form>
         </div>
     </div>
+    <?php require_once('footer.php'); ?>
 </body>
 </html>

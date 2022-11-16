@@ -11,7 +11,7 @@
 
     session_start();
     require('connect.php');
-    require('top-navigation.php');    
+    require('header.php');    
     require('library.php');  
 
     // checks to see if the user is logged in and redirects to login if not

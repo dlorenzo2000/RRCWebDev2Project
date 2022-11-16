@@ -11,7 +11,7 @@
  
     session_start();
     require('connect.php');
-    require('header.php');
+    require('top-navigation.php');
 
     if($_POST && !empty($_POST['username']) && !empty($_POST['pwd'])){
          
@@ -91,6 +91,5 @@
             </form>
         </div>
     </div>
-    <?php require_once('footer.php'); ?>
 </body>
 </html>

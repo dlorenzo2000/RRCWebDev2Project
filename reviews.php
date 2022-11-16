@@ -12,7 +12,7 @@
     session_start();
 
     require('connect.php');
-    require('top-navigation.php');
+    require('header.php');
 
     // query the db for all the posts
     $qry = "SELECT * FROM post";    
@@ -21,7 +21,8 @@
     $qryRestaurant = "SELECT * 
                       FROM restaurant 
                       JOIN post 
-                      WHERE post.restaurantid = restaurant.restaurantid";
+                      WHERE post.restaurantid = restaurant.restaurantid 
+                        AND active = 1";
                      
     $stm = $db->prepare($qry);
     $stmRestaurant = $db->prepare($qryRestaurant);

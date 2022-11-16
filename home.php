@@ -12,7 +12,7 @@
     session_start();
     
     require('connect.php');
-    require('top-navigation.php'); 
+    require('header.php'); 
     require('library.php');  
 
     $usr_dat = CheckLogin($db);
@@ -38,5 +38,6 @@
             Hi <?= $usr_dat['first_name'] ?>. Welcome to the home page!
         </p>
     </div>
+    <?php require_once('footer.php'); ?>
 </body>
 </html>
