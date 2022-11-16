@@ -5,13 +5,34 @@
  * Course: Web Development - 2008 (228566)
  * Assignment: Final Project
  * Created: Nov 12, 2022
- * Updated: Nov 12, 2022 
+ * Updated: Nov 15, 2022 
  * Purpose: Manage the sign up process.
  *****************************************************************************/
 
     session_start();
     require('connect.php');
     include('top-navigation.php');
+
+    if($_SERVER['REQUEST_METHOD'] === "POST"){
+        if($_POST && empty($_POST['first-name'])){
+            $first_name_error = "* Please enter your first name.";
+        }
+        if($_POST && empty($_POST['last-name'])){
+            $last_name_error = "* Please enter your last name.";
+        }
+        if($_POST && empty($_POST['email'])){
+            $email_error = "* Please enter your email address.";
+        }
+        if($_POST && empty($_POST['username'])){
+            $username_error = "* Please enter a username.";
+        }
+        if($_POST && empty($_POST['pwd1'])){
+            $password_error1 = "* Please enter a password.";
+        }
+        if($_POST && empty($_POST['pwd2'])){
+            $password_error2 = "* Please re-enter the password.";
+        }
+    }
 
     if($_POST && !empty($_POST['first-name']) && !empty($_POST['last-name'])
         && !empty($_POST['email']) && !empty($_POST['username']) 
@@ -46,28 +67,7 @@
         else{
                 $password_error2 = "* The passwords do not match";            
         }      
-    }
-
-    if($_SERVER['REQUEST_METHOD'] === "POST"){
-        if($_POST && empty($_POST['first-name'])){
-            $first_name_error = "* Please enter your first name.";
-        }
-        if($_POST && empty($_POST['last-name'])){
-            $last_name_error = "* Please enter your last name.";
-        }
-        if($_POST && empty($_POST['email'])){
-            $email_error = "* Please enter your email address.";
-        }
-        if($_POST && empty($_POST['username'])){
-            $username_error = "* Please enter a username.";
-        }
-        if($_POST && empty($_POST['pwd1'])){
-            $password_error1 = "* Please enter a password.";
-        }
-        if($_POST && empty($_POST['pwd2'])){
-            $password_error2 = "* Please re-enter the password.";
-        }
-    }
+    }    
 ?>
 
 <!DOCTYPE html>

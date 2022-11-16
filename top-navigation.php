@@ -5,12 +5,13 @@
  * Course: Web Development - 2008 (228566)
  * Assignment: Final Project
  * Created: Nov 12, 2022
- * Updated: Nov 12, 2022 
+ * Updated: Nov 15, 2022 
  * Purpose: Top navigation bar that is found on every page.
  *****************************************************************************/
 
     if(isset($_SESSION['username'])){
-        $logout_link = "Lerggggout";
+        $logout_link = "Logout";
+        $my_reviews_link = "My Reviews";
     }
 
  ?>
@@ -42,8 +43,12 @@
                 <ul>
                     <li class="top-nav-li"><a href="index.php">Home</a></li>        
                     <li class="top-nav-li"><a href="about.php">About</a></li>
-                    <li class="top-nav-li"><a href="contact.php">Contact</a></li>      
-                    <li class="top-nav-li"><a href="logout.php"><?php if(isset($logout_link)) echo $logout_link; ?> </a></li>
+                    <li class="top-nav-li"><a href="contact.php">Contact</a></li>    
+                    <li class="top-nav-li"><a href="my_reviews.php">
+                        <?php if(isset($logout_link)) echo $my_reviews_link; ?> </a></li>    
+                      
+                    <li class="top-nav-li"><a href="logout.php">
+                        <?php if(isset($logout_link)) echo $logout_link; ?> </a></li>
                     <li class="top-nav-li">
                         <form action="#" class="top-nav-search">
                             <input type="text">

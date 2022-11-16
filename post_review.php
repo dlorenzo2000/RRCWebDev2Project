@@ -4,9 +4,9 @@
  * Student number: 0367298
  * Course: Web Development - 2008 (228566)
  * Assignment: Final Project
- * Created: Nov 2, 2022
+ * Created: Nov 12, 2022
  * Updated: Nov 14, 2022 
- * Purpose: The main landing page for the site.
+ * Purpose: Handles the insert review propcess.
  *****************************************************************************/
 
     session_start();
@@ -42,14 +42,17 @@
 
         if($_POST){
 
-            $post_title = filter_input(INPUT_POST, 'post_title'
-                , FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $post_content = filter_input(INPUT_POST, 'post_content'
-                , FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $post_title = trim(filter_input(INPUT_POST, 'post_title'
+                , FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+            $post_content = trim(filter_input(INPUT_POST, 'post_content'
+                , FILTER_SANITIZE_FULL_SPECIAL_CHARS));
             $restaurant_rating 
-                = (int)(filter_input(INPUT_POST, 'restaurant_rating' , FILTER_VALIDATE_INT));
-            $restaurantid = (int)(filter_input(INPUT_POST, 'restaurantid' , FILTER_VALIDATE_INT));
-            $categoryid = (int)(filter_input(INPUT_POST, 'categoryid' , FILTER_VALIDATE_INT));
+                = (int)(filter_input(INPUT_POST, 'restaurant_rating' 
+                    , FILTER_SANITIZE_NUMBER_INT));
+            $restaurantid = (int)(filter_input(INPUT_POST, 'restaurantid' 
+                    , FILTER_SANITIZE_NUMBER_INT));
+            $categoryid = (int)(filter_input(INPUT_POST, 'categoryid' 
+                    , FILTER_SANITIZE_NUMBER_INT));
 
             $userid = intval($usr_dat['userid']);
      
@@ -67,7 +70,15 @@
             $stm->bindvalue(':categoryid', $categoryid, PDO::PARAM_INT);
             $stm->bindValue(':userid', $userid, PDO::PARAM_INT);
 
-            $stm->execute();
+            $stm->execute();    
+            
+            // get the postid of this latest post assign it to the session 
+            $qry_postid = "SELECT MAX(postid) FROM post";
+            $stm_postid = $db->prepare($qry_postid);
+            $stm_postid->execute();
+            $_SESSION['postid'] = $stm_postid->fetch();
+            header("Location: my_reviews.php");
+            exit;
         }
     }
 ?>
