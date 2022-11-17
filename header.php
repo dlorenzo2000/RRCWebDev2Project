@@ -25,12 +25,17 @@
         <div class="col-sm-8">  
             <nav>      
                 <ul>
+                    <li class="top-nav-li">
+                        <?php if(isset($_SESSION['username'])) 
+                            echo "Hi " . strtoupper($_SESSION['username']);?>
+                    </li>          
                     <li class="top-nav-li"><a href="index.php">Home</a></li>          
                     <li class="top-nav-li"><a href="my_reviews.php">
-                        <?php if(isset($logout_link)) echo $my_reviews_link; ?> </a></li>    
-                    
+                        <?php if(isset($logout_link)) echo $my_reviews_link; ?> </a>
+                    </li>                    
                     <li class="top-nav-li"><a href="logout.php">
-                        <?php if(isset($logout_link)) echo $logout_link; ?> </a></li>
+                        <?php if(isset($logout_link)) echo $logout_link; ?> </a>
+                    </li>
                     <li class="top-nav-li">
                         <form action="#" class="top-nav-search">
                             <input type="text">

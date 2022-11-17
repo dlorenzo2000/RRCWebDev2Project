@@ -38,12 +38,12 @@
     <hr>
     <div class="container">   
         <div class="row">
-            <div class="col">
+            <div class="col scol-md-6">
                 <button onclick="location.href='post_review.php';" 
                     class="btn btn-secondary">Write a review</button>
             </div>
         </div>     
-        <div class="row">      
+        <div class="row col-md-6">      
             <?php if($stmRestaurant->rowCount() > 0): ?>
                 <ul>                
                     <?php while ($datRestaurant = $stmRestaurant->fetch()): ?>                        
