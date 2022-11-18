@@ -15,8 +15,8 @@
     
     // query the restaurants that have review posts
     $qryRestaurant = "SELECT * 
-                      FROM restaurant 
-                      INNER JOIN post 
+                      FROM post 
+                      INNER JOIN restaurant 
                       WHERE post.restaurantid = restaurant.restaurantid
                         AND post.active = 1
                         AND post.userid = $userid";
@@ -32,8 +32,8 @@
             class="btn btn-secondary">New review</button>
     </div>
 </div>     
-<div class="row">              
-    <?php if($stmRestaurant->rowCount() > 0): ?>
+<div class="row">            
+    <?php if($stmRestaurant->rowCount() > 0): ?> 
         <ul>                
             <?php while($datRestaurant = $stmRestaurant->fetch()): ?>                        
                 <li>
@@ -41,7 +41,7 @@
                     <h6><?= $datRestaurant['post_title'] ?> - <?= $datRestaurant['restaurant_rating'] ?>/10</h6>
                     <h6>
                         Posted on <?= date('F d, Y h:m A', strtotime($datRestaurant['created_date'])) ?>
-                        <a href="update_review.php?postid=<?= $datRestaurant['postid'] ?>">EDIT</a>                                
+                        <a href="update_review.php?postid=<?= $datRestaurant['postid']?>">EDIT</a>                                
                     </h6>
                     <p><?= $datRestaurant['post_content'] ?></p>   
                 </li>

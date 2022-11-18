@@ -10,8 +10,8 @@
  *****************************************************************************/
 
     $db_dsn = 'mysql:host=localhost;dbname=_server;charset=utf8';
-    $db_usr = 'root';
-    $db_pwd = '';
+    $db_usr = 'thor';
+    $db_pwd = 'godofthunder';
 
     // password_hash($password, PASSWORD_DEFAULT), salt is included in this function
  

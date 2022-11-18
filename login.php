@@ -38,6 +38,7 @@
             if($dat['pwd'] === $pwd){ 
                 $_SESSION['username'] = $dat['username'];
                 $_SESSION['userid'] = $dat['userid'];
+                $_SESSION['admin'] = $dat['admin'];
                 header("Location: home.php");
                 die;                
             }

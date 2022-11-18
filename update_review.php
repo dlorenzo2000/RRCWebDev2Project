@@ -38,13 +38,33 @@
  
         // get the postid from the selected review to output to the page on load
         if(isset($_GET['postid'])){
-            $postid = filter_input(INPUT_GET, 'postid', FILTER_SANITIZE_NUMBER_INT);
-            $qry = "SELECT * FROM post WHERE postid = :postid LIMIT 1";
-            $stm = $db->prepare($qry);
+            $postid = filter_input(INPUT_GET, 'postid'
+                , FILTER_SANITIZE_NUMBER_INT);            
+
+            $qry = "SELECT * FROM post JOIN restaurant                  
+                WHERE post.postid = :postid 
+                AND post.restaurantid = restaurant.restaurantid LIMIT 1";
+            
+            $stm = $db->prepare($qry);           
             $stm->bindValue(':postid', $postid, PDO::PARAM_INT);
             $stm->execute();
-    
+
             $dat = $stm->fetch();
+
+            $categoryid = $dat['categoryid'];
+
+
+
+
+
+            $qryGetCateogry = "SELECT * FROM foodcategory
+                 WHERE categoryid = :categoryid LIMIT 1";            
+
+            $stmGetCategory = $db->prepare($qryGetCateogry);
+            $stmGetCategory->bindValue(':categoryid', $categoryid , PDO::PARAM_INT);
+            $stmGetCategory->execute();
+
+            $datGetCategory = $stmGetCategory->fetch();                        
         }
 
         if($_POST){
@@ -84,7 +104,6 @@
             exit;
         }
 
-        /////////////////////////// TO DO, this will only update and select the ACTIVE to 0
         if($_POST && $postid['delete']){ 
             $postid=filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
             $qry="UPDATE post 
@@ -103,21 +122,23 @@
 ?> 
 
 <div class="row justify-content-center">
-    Hello <?= $usr_dat['first_name'] ?> Editing postid = <?= $postid ?> 
-    <h4>EDITING review</h4>
+    <h1>EDIT review</h1>
     <form method="post" action="update_review.php">
-        <input type="hidden" name="postid" value="<?=$dat['postid']?>
+        <input type="hidden" name="postid" value="<?=$dat['postid']?>">
+
         <label for="post_title">Title</label>
+        
         <input type="text" name="post_title" value="<?=$dat['post_title']?>">
         <br />
         <textarea name="post_content" rows="10" cols="94"><?=$dat['post_content']?>
         </textarea>
         <br />
         <label for="restaurant_rating">Rating</label>
-        <select name="restaurant_rating" value="<?=$dat['restaurant_rating']?>">
+        <select name="restaurant_rating">
             <option hidden disabled selected value> 
                 -- select an option -- 
             </option>
+            <option selected><?= $dat['restaurant_rating']?></option>
             <option value = "1">1</option>
             <option value = "2">2</option>
             <option value = "3">3</option>
@@ -133,32 +154,33 @@
         <select name="restaurantid">
             <option hidden disabled selected value> 
                 -- select an option -- 
-            </option>
-            <?php if($stmRestaurant->rowCount() > 0): ?>
+            </option>             
+            <?php if($stmRestaurant->rowCount() > 0): ?>                
+                <option selected value="<?= $dat['restaurantid'] ?>"><?= $dat['restaurant_name'] ?></option>                             
                 <?php while($dat = $stmRestaurant->fetch()): ?>
-                    <option value="<?= $dat['restaurantid'] ?>">
-                        <?= $dat['restaurant_name'] ?> 
-                    </option>
+                    <option value="<?= $dat['restaurantid'] ?>"> <?= $dat['restaurant_name'] ?> </option>
                 <?php endwhile ?>
             <?php endif ?>
         </select> 
         <br />
-        <label for="categoryid">Category</label>
+        <label for="categoryid">Category </label>     
+
         <select name="categoryid">
             <option hidden disabled selected value>
                     -- select an option -- 
             </option>
             <?php if($stmCategory->rowCount() > 0): ?>
+                <option selected value="<?= $dat['categoryid'] ?>"><?=  $datGetCategory['category_name'] ?></option>
                 <?php while($dat = $stmCategory->fetch()): ?>
-                    <option value="<?= $dat['categoryid'] ?>">
-                        <?= $dat['category_name'] ?> 
-                    </option>
+                    <option value="<?= $dat['categoryid'] ?>"><?=$dat['category_name'] ?></option>
                 <?php endwhile ?>
             <?php endif ?>
         </select> 
         <br />
-        <button type="submit" class="btn btn-secondary" id="submit">Save</button>
-        <button type="submit" class="btn btn-secondary" value="Delete" onclick="return confirm('Are you sure?')">Delete</button>
+        <button type="submit" class="btn btn-secondary" id="submit">Save</button>        
+        <button class="btn btn-secondary" onclick="history.back()">Cancel</button>
+        <button type="submit" class="btn btn-secondary" value="Delete" 
+            onclick="return confirm('Are you sure?')">Delete</button>
         <br />
         <br />
     </form> 
