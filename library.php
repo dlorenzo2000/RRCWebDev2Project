@@ -13,7 +13,7 @@
     require('connect.php');
 
     // This function checks to see if a user is logged in succesfuly and
-    // creates a SESSION variable if the session is created. 
+    // creates a SESSION variable 'username' if the session is created. 
     // PARAMETER: $db is a connection to the database 
     function CheckLogin($db){
         if(isset($_SESSION['username'])){
@@ -29,6 +29,7 @@
             
             if($stm->rowCount() > 0){                
                 $usr_dat = $stm->fetch();
+                
                 return $usr_dat;
             }
         }

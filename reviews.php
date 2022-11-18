@@ -5,63 +5,53 @@
  * Course: Web Development - 2008 (228566)
  * Assignment: Final Project
  * Created: Nov 13, 2022
- * Updated: Nov 13, 2022 
+ * Updated: Nov 16, 2022 
  * Purpose: Reviews page that contains food blogs written by registered users.
  *****************************************************************************/
 
-    session_start();
-
-    require('connect.php');
-    require('top-navigation.php');
-
-    // query the db for all the posts
-    $qry = "SELECT * FROM post";    
+    require_once('header.php');
     
     // query the restaurants that have review posts
     $qryRestaurant = "SELECT * 
-                      FROM restaurant 
-                      JOIN post 
-                      WHERE post.restaurantid = restaurant.restaurantid";
-                     
-    $stm = $db->prepare($qry);
+                      FROM post 
+                      INNER JOIN restaurant
+                        JOIN user
+                      WHERE post.restaurantid = restaurant.restaurantid                        
+                        AND post.active = 1
+                        AND post.userid = user.userid";
+                      
     $stmRestaurant = $db->prepare($qryRestaurant);
     
     $stmRestaurant->execute();
-    $stm->execute();
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reviews</title>
-</head>
-<body>
-    <hr>
-    <div class="container">   
-        <div class="row">
-            <div class="col">
-                <button onclick="location.href='post_review.php';" 
-                    class="btn btn-secondary">Write a review</button>
-            </div>
-        </div>     
-        <div class="row">              
-            <?php if(($stm->rowCount() > 0) && $stmRestaurant->rowCount() > 0): ?>
-                <ul>                
-                    <?php while($dat = $stm->fetch()): ?>
-                        <?php $datRestaurant = $stmRestaurant->fetch() ?>                        
-                        <li>
-                            <h5><?= $datRestaurant['restaurant_name'] ?></h5>                            
-                            <h6><?= $dat['post_title'] ?> - <?= $dat['restaurant_rating'] ?>/10</h6>
-                            <h6>Posted on <?= date('F d, Y h:m A', strtotime($dat['created_date'])) ?></h6>
-                            <p><?= $dat['post_content'] ?></p>        
-                        </li>
-                    <?php endwhile ?>
-                </ul>
-            <?php endif ?>
-        </div>
+  
+<div class="row">
+    <div class="col">
+        <button onclick="location.href='post_review.php';" 
+            class="btn btn-secondary">Write a review</button>
     </div>
-</body>
-</html>
+</div>     
+<div class="row col-md-6">      
+    <?php if($stmRestaurant->rowCount() > 0): ?>
+        <ul>                
+            <?php while ($datRestaurant = $stmRestaurant->fetch()): ?>                        
+                <li>
+                    <h5><?= $datRestaurant['restaurant_name'] = isset($datRestaurant['restaurant_name']) ? 
+                        $datRestaurant['restaurant_name'] : 'data not found' ?></h5>                                                       
+                    <h6>Title - <?= $datRestaurant['post_title'] ?></h6>                                                       
+                    <p><?= $datRestaurant['post_content'] ?></p>        
+                    <h6>
+                        <?= $datRestaurant['restaurant_rating'] ?>/10 
+                        rating posted by <?= $datRestaurant['first_name'] ?> on                                  
+                        <?php $display_date = (($datRestaurant['created_date']) === ($datRestaurant['modified_date'])) ?
+                            date('F d, Y h:i A', strtotime($datRestaurant['created_date'])) : 
+                            date('F d, Y h:i A', strtotime($datRestaurant['modified_date'])); ?>    
+                        <?php if(isset($display_date)) echo $display_date; ?>                             
+                    </h6> 
+                </li>
+                <hr>
+            <?php endwhile ?>
+        </ul>
+    <?php endif ?>
+</div>
+<?php require_once('footer.php'); ?> 

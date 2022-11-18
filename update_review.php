@@ -9,11 +9,8 @@
  * Purpose: Handles the update review process.
  *****************************************************************************/
 
-    session_start();
-    require('connect.php');
-    require('top-navigation.php');    
-    require('library.php');      
-
+    require_once('header.php');
+    
     // checks to see if the user is logged in and redirects to login if not
     if(!($usr_dat = CheckLogin($db))){
         header("Location: login.php");
@@ -86,91 +83,84 @@
             header("Location: my_reviews.php");
             exit;
         }
-    }
-?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" 
-        href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" 
-        integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" 
-        crossorigin="anonymous">
-    <link rel="stylesheet" href="styles.css" type="text/css"> 
-    <title>Write a review</title>
-</head>
-<body>
-    <hr>    
-    <div class="container">
-        <div class="row justify-content-center">
-            Hello <?= $usr_dat['first_name'] ?> Editing postid = <?= $postid ?> 
-            <h4>EDITING review</h4>
-            <form method="post" action="update_review.php">
-                <input type="hidden" name="postid" value="<?=$dat['postid']?>
-                <label for="post_title">Title</label>
-                <input type="text" name="post_title" value="<?=$dat['post_title']?>">
-                <br />
-                <textarea name="post_content" rows="10" cols="94"><?=$dat['post_content']?>
-                </textarea>
-                <br />
-                <label for="restaurant_rating">Rating</label>
-                <select name="restaurant_rating" value="<?=$dat['restaurant_rating']?>">
-                    <option hidden disabled selected value> 
-                        -- select an option -- 
+        /////////////////////////// TO DO, this will only update and select the ACTIVE to 0
+        if($_POST && $postid['delete']){ 
+            $postid=filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+            $qry="UPDATE post 
+                  SET active=:active 
+                  WHERE postid=:postid";
+                    
+            $stm=$db->prepare($qry);
+            $stm->bindValue(':active', 0, PDO::PARAM_INT);
+            $stm->bindValue(':postid', $postid, PDO::PARAM_INT);
+            $stm->execute();
+
+            header("Location: myreviews.php");
+            exit;
+        }
+    }
+?> 
+
+<div class="row justify-content-center">
+    Hello <?= $usr_dat['first_name'] ?> Editing postid = <?= $postid ?> 
+    <h4>EDITING review</h4>
+    <form method="post" action="update_review.php">
+        <input type="hidden" name="postid" value="<?=$dat['postid']?>
+        <label for="post_title">Title</label>
+        <input type="text" name="post_title" value="<?=$dat['post_title']?>">
+        <br />
+        <textarea name="post_content" rows="10" cols="94"><?=$dat['post_content']?>
+        </textarea>
+        <br />
+        <label for="restaurant_rating">Rating</label>
+        <select name="restaurant_rating" value="<?=$dat['restaurant_rating']?>">
+            <option hidden disabled selected value> 
+                -- select an option -- 
+            </option>
+            <option value = "1">1</option>
+            <option value = "2">2</option>
+            <option value = "3">3</option>
+            <option value = "4">4</option>
+            <option value = "5">5</option>
+            <option value = "6">6</option>
+            <option value = "7">7</option>
+            <option value = "8">8</option>
+            <option value = "9">9</option>
+            <option value = "10">10</option>
+        </select> 
+        <label for="restaurantid">Restaurant</label>
+        <select name="restaurantid">
+            <option hidden disabled selected value> 
+                -- select an option -- 
+            </option>
+            <?php if($stmRestaurant->rowCount() > 0): ?>
+                <?php while($dat = $stmRestaurant->fetch()): ?>
+                    <option value="<?= $dat['restaurantid'] ?>">
+                        <?= $dat['restaurant_name'] ?> 
                     </option>
-                    <option value = "1">1</option>
-                    <option value = "2">2</option>
-                    <option value = "3">3</option>
-                    <option value = "4">4</option>
-                    <option value = "5">5</option>
-                    <option value = "6">6</option>
-                    <option value = "7">7</option>
-                    <option value = "8">8</option>
-                    <option value = "9">9</option>
-                    <option value = "10">10</option>
-                </select> 
-                <label for="restaurantid">Restaurant</label>
-                <select name="restaurantid">
-                    <option hidden disabled selected value> 
-                        -- select an option -- 
+                <?php endwhile ?>
+            <?php endif ?>
+        </select> 
+        <br />
+        <label for="categoryid">Category</label>
+        <select name="categoryid">
+            <option hidden disabled selected value>
+                    -- select an option -- 
+            </option>
+            <?php if($stmCategory->rowCount() > 0): ?>
+                <?php while($dat = $stmCategory->fetch()): ?>
+                    <option value="<?= $dat['categoryid'] ?>">
+                        <?= $dat['category_name'] ?> 
                     </option>
-                    <?php if($stmRestaurant->rowCount() > 0): ?>
-                        <?php while($dat = $stmRestaurant->fetch()): ?>
-                            <option value="<?= $dat['restaurantid'] ?>">
-                                <?= $dat['restaurant_name'] ?> 
-                            </option>
-                        <?php endwhile ?>
-                    <?php endif ?>
-                </select> 
-                <br />
-                <label for="categoryid">Category</label>
-                <select name="categoryid">
-                    <option hidden disabled selected value>
-                         -- select an option -- 
-                    </option>
-                    <?php if($stmCategory->rowCount() > 0): ?>
-                        <?php while($dat = $stmCategory->fetch()): ?>
-                            <option value="<?= $dat['categoryid'] ?>">
-                                <?= $dat['category_name'] ?> 
-                            </option>
-                        <?php endwhile ?>
-                    <?php endif ?>
-                </select> 
-                <br />
-                <button type="submit" class="btn btn-secondary" id="submit">Save</button>
-                <br />
-                <br />
-            </form> 
-        </div>
-    </div>        
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" 
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" 
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" 
-        integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" 
-        crossorigin="anonymous"></script>  
-</body>
-</html>
+                <?php endwhile ?>
+            <?php endif ?>
+        </select> 
+        <br />
+        <button type="submit" class="btn btn-secondary" id="submit">Save</button>
+        <button type="submit" class="btn btn-secondary" value="Delete" onclick="return confirm('Are you sure?')">Delete</button>
+        <br />
+        <br />
+    </form> 
+</div>   
+<?php require_once('footer.php'); ?>
