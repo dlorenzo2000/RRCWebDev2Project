@@ -12,6 +12,7 @@
 ?>
 
 <?php require_once('header.php'); ?>
+<h1>Our company</h1>
 <p>
 We are an ethically sourced company that has wholesome family values
 that have been engrained in our beliefs and upbring from watching 
