@@ -9,9 +9,7 @@
  * Purpose: Manage the sign up process.
  *****************************************************************************/
 
-    session_start();
-    require('connect.php');
-    include('top-navigation.php');
+    require_once('header.php'); 
 
     if($_SERVER['REQUEST_METHOD'] === "POST"){
         if($_POST && empty($_POST['first-name'])){
@@ -70,71 +68,53 @@
     }    
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" 
-        href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" 
-        integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" 
-        crossorigin="anonymous">
-    <link rel="stylesheet" href="styles.css" type="text/css"> 
-    <title>Sign up page</title>
-</head>
-<body>    
-    <hr>
-    <div class="container">
-        <div class="row">
-            <form method="post" action="signup.php">    
-            <br /> 
-                <br /> 
-                <br />         
-                <h2>Sign up</h2> 
-                <br />
-                <label for="first-name">First name</label>
-                <input type="text" name="first-name" 
-                    value="<?php if(isset($_POST['first-name'])) echo $_POST['first-name']; ?>">
-                <span><?php if(isset($first_name_error)) echo $first_name_error; ?></span>                
-                <br />
-                <br />
-                <label for="last-name">Last name</label>
-                <input type="text" name="last-name"
-                    value="<?php if(isset($_POST['last-name'])) echo $_POST['last-name']; ?>">
-                <span><?php if(isset($last_name_error)) echo $last_name_error; ?></span>
-                <br />
-                <br />
-                <label for="email">Email</label>
-                <input type="email " name="email" 
-                    value="<?php if(isset($_POST['email'])) echo $_POST['email']; ?>">
-                <span><?php if(isset($email_error)) echo $email_error; ?></span>
-                <br />
-                <br />     
-                <label for="username">Username</label>
-                <input type="text" name="username"
-                    value="<?php if(isset($_POST['username'])) echo $_POST['username']; ?>">
-                <span><?php if(isset($username_error)) echo $username_error; ?></span>
-                <br />
-                <br />
-                <label for="pwd1">Password</label>
-                <input type="password" name="pwd1"
-                    value="<?php if(isset($_POST['pwd1'])) echo $_POST['pwd1']; ?>">   
-                <span><?php if(isset($password_error1)) echo $password_error1; ?></span>      
-                <br />
-                <br />        
-                <label for="pwd2">Re-enter password</label>
-                <input type="password" name="pwd2"
-                    value="<?php if(isset($_POST['pwd2'])) echo $_POST['pwd2']; ?>">
-                <span><?php if(isset($password_error2)) echo $password_error2; ?></span>   
-                <br />
-                <br />           
-                <button type="submit" class="btn btn-secondary" id="submit">Register</button> 
-                <br />
-                <br />
-                <a href="login.php">Click here to login</a>
-            </form>
-        </div>
-    </div>
-</body>
-</html>
+<div class="row">
+    <form method="post" action="signup.php">    
+    <br /> 
+        <br /> 
+        <br />         
+        <h2>Sign up</h2> 
+        <br />
+        <label for="first-name">First name</label>
+        <input type="text" name="first-name" 
+            value="<?php if(isset($_POST['first-name'])) echo $_POST['first-name']; ?>">
+        <span><?php if(isset($first_name_error)) echo $first_name_error; ?></span>                
+        <br />
+        <br />
+        <label for="last-name">Last name</label>
+        <input type="text" name="last-name"
+            value="<?php if(trim(isset($_POST['last-name']))) echo $_POST['last-name']; ?>">
+        <span><?php if(isset($last_name_error)) echo $last_name_error; ?></span>
+        <br />
+        <br />
+        <label for="email">Email</label>
+        <input type="email " name="email" 
+            value="<?php if(trim(isset($_POST['email']))) echo $_POST['email']; ?>">
+        <span><?php if(isset($email_error)) echo $email_error; ?></span>
+        <br />
+        <br />     
+        <label for="username">Username</label>
+        <input type="text" name="username"
+            value="<?php if(trim(isset($_POST['username']))) echo $_POST['username']; ?>">
+        <span><?php if(isset($username_error)) echo $username_error; ?></span>
+        <br />
+        <br />
+        <label for="pwd1">Password</label>
+        <input type="password" name="pwd1"
+            value="<?php if(trim(isset($_POST['pwd1']))) echo $_POST['pwd1']; ?>">   
+        <span><?php if(isset($password_error1)) echo $password_error1; ?></span>      
+        <br />
+        <br />        
+        <label for="pwd2">Re-enter password</label>
+        <input type="password" name="pwd2"
+            value="<?php if(trim(isset($_POST['pwd2']))) echo $_POST['pwd2']; ?>">
+        <span><?php if(isset($password_error2)) echo $password_error2; ?></span>   
+        <br />
+        <br />           
+        <button type="submit" class="btn btn-secondary" id="submit">Register</button> 
+        <br />
+        <br />
+        <a href="login.php">Click here to login</a>
+    </form>
+</div>    
+<?php require_once('footer.php'); ?> 
