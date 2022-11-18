@@ -16,8 +16,10 @@
                       FROM post 
                       INNER JOIN restaurant
                         JOIN user
+                        JOIN foodcategory
                       WHERE post.restaurantid = restaurant.restaurantid                        
                         AND post.active = 1
+                        AND post.categoryid = foodcategory.categoryid
                         AND post.userid = user.userid";
                       
     $stmRestaurant = $db->prepare($qryRestaurant);
@@ -36,8 +38,11 @@
         <ul>                
             <?php while ($datRestaurant = $stmRestaurant->fetch()): ?>                        
                 <li>
-                    <h5><?= $datRestaurant['restaurant_name'] = isset($datRestaurant['restaurant_name']) ? 
-                        $datRestaurant['restaurant_name'] : 'data not found' ?></h5>                                                       
+
+                <!--
+                    <h5><?= $datRestaurant['restaurant_name'] = isset($datRestaurant['restaurant_name']) ?  $datRestaurant['restaurant_name'] : 'data not found' ?></h5>                                                       
+            -->
+                    <h5><?= $datRestaurant['restaurant_name'] ?> - <?= $datRestaurant['category_name'] ?></h5>                                                       
                     <h6>Title - <?= $datRestaurant['post_title'] ?></h6>                                                       
                     <p><?= $datRestaurant['post_content'] ?></p>        
                     <h6>

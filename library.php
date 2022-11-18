@@ -18,7 +18,7 @@
     function CheckLogin($db){
         if(isset($_SESSION['username'])){
             $username = $_SESSION['username'];
-
+ 
             $qry = "SELECT * FROM User WHERE username = :username LIMIT 1";
         
             $stm = $db->prepare($qry);
@@ -28,8 +28,7 @@
             $stm->execute();            
             
             if($stm->rowCount() > 0){                
-                $usr_dat = $stm->fetch();
-                
+                $usr_dat = $stm->fetch();                             
                 return $usr_dat;
             }
         }

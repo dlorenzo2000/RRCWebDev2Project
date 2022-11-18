@@ -53,10 +53,6 @@
 
             $categoryid = $dat['categoryid'];
 
-
-
-
-
             $qryGetCateogry = "SELECT * FROM foodcategory
                  WHERE categoryid = :categoryid LIMIT 1";            
 

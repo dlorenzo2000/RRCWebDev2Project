@@ -80,9 +80,8 @@
     }
 ?>
 
+<h1>Write a restaurant review</h1>
 <div class="row justify-content-center">
-    Hello <?= $usr_dat['first_name'] ?> userid#<?= $usr_dat['userid'] ?>
-    <h4>Write a restaurant review</h4>
     <form method="post" action="post_review.php">
         <label for="post_title">Title</label>
         <input type="text" name="post_title"> 
