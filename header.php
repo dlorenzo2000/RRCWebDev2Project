@@ -9,12 +9,30 @@
  * Purpose: Header found on every page.
  *****************************************************************************/
 
+    session_start();
+    require('connect.php');    
+    require('library.php'); 
+
     if(isset($_SESSION['username'])){
         $logout_link = "Logout";
         $my_reviews_link = "My Reviews";
     }   
 ?>
-   
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">     
+    <link rel="stylesheet" 
+        href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" 
+        integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" 
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css" type="text/css">
+    <title>Foodzagram</title>
+</head>
+<body>   
 <header>
     <div class="row top-nav-links align-item-center">
         <div class="col-sm-4">
@@ -27,15 +45,12 @@
                 <ul>
                     <li class="top-nav-li">
                         <?php if(isset($_SESSION['username'])) 
-                            echo "Hi " . strtoupper($_SESSION['username']);?>
+                            echo "Hi " . strtoupper($_SESSION['username']) . "!";?>
                     </li>          
                     <li class="top-nav-li"><a href="index.php">Home</a></li>          
                     <li class="top-nav-li"><a href="my_reviews.php">
                         <?php if(isset($logout_link)) echo $my_reviews_link; ?> </a>
-                    </li>                    
-                    <li class="top-nav-li"><a href="logout.php">
-                        <?php if(isset($logout_link)) echo $logout_link; ?> </a>
-                    </li>
+                    </li>                   
                     <li class="top-nav-li">
                         <form action="#" class="top-nav-search">
                             <input type="text">
@@ -43,12 +58,20 @@
                         <a href="search.php">
                             <button class="btn btn-secondary">Search</button>
                         </a>
-                    </li> 
-                    <button onclick="location.href='login.php';" 
-                        class="btn btn-secondary" >Login/Sign Up
-                    </button>                      
+                    </li>   
+                    <li class="top-nav-li">         
+                        <?php if(isset($_SESSION['username'])): ?>
+                            <button onclick="location.href='logout.php';" 
+                                class="btn btn-secondary" >Logout </button>        
+                        <?php else: ?>
+                            <button onclick="location.href='login.php';" 
+                                class="btn btn-secondary" >Login/Sign Up </button>  
+                        <?php endif ?>  
+                    </li>
                 </ul>
             </nav>   
         </div>
     </div>            
-</header>       
+</header> 
+<hr>     
+<div class="container">     

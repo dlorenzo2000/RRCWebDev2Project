@@ -4,7 +4,7 @@
  * Course: Web Development - 2008 (228566)
  * Assignment: Final Project
  * Created: Nov 12, 2022
- * Updated: Nov 12, 2022 
+ * Updated: Nov 17, 2022 
  * Purpose: Add styling for the site.
  *****************************************************************************/
 
@@ -16,13 +16,11 @@ ul{
     list-style: none;    
 }
 
-.top-nav-li{
-    display: inline-block;
-}
-
+.top-nav-li,
+.bottom-nav-li,
 .top-nav-search{
     display: inline-block;
-}
+} 
 
 .top-logo{
     width: 7em;
