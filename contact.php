@@ -7,12 +7,11 @@
  * Created: Nov 12, 2022
  * Updated: Nov 12, 2022 
  * Purpose: Contact page info.
- *****************************************************************************/
+ ******************************************************************************/
 
- 
+     require_once('header.php');
 ?>
 
-<?php require_once('header.php'); ?>
 <p>
     We are located at 123 Main St. Wpg, MB R9X 9XZ. Our phone number 
     is (204)555-1234. 
