@@ -73,5 +73,5 @@
         </div>
     </div>            
 </header> 
-<hr>     
+<hr>
 <div class="container">     
