@@ -112,6 +112,8 @@
         <br />
         <br />           
         <button type="submit" class="btn btn-secondary" id="submit">Register</button> 
+        <button type="button" class="btn btn-secondary" 
+            onclick="window.location.replace('index.php')">Cancel</button>
         <br />
         <br />
         <a href="login.php">Click here to login</a>

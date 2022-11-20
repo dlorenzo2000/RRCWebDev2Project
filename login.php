@@ -51,13 +51,9 @@
         }
     }        
 ?>
-  
+<h1>Login</h1>  
 <div class="row">
-    <form method="post" action="login.php">    
-        <br /> 
-        <br /> 
-        <br />         
-        <h2>Login</h2> 
+    <form method="post" action="login.php"> 
         <br />       
         <label for="username">Username</label>
         <input type="text" name="username"
@@ -71,6 +67,7 @@
         <br />
         <br />
         <button type="submit" class="btn btn-secondary">Login</button> 
+        <button type="button" class="btn btn-secondary" onclick="window.location.replace('index.php')">Cancel</button>
         <br />
         <br />
         <a href="signup.php">Click here to sign up</a>

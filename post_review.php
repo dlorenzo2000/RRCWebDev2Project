@@ -117,7 +117,7 @@
                 <?php endwhile ?>
             <?php endif ?>
         </select>
-        <a href="add_restaurant.php">Add restaurant</a>
+        <a href="restaurant.php">Add restaurant</a>
         <br />
         <label for="categoryid">Category</label>
         <select name="categoryid">
@@ -132,9 +132,11 @@
                 <?php endwhile ?>
             <?php endif ?>
         </select>
-        <a href="add_category.php">Add category</a>
+        <a href="category.php">Add category</a>
         <br />
         <button type="submit" class="btn btn-secondary" id="submit">Submit</button>
+        <button type="button" class="btn btn-secondary" 
+            onclick="window.location.replace('my_reviews.php')">Cancel</button>
         <br />
         <br />
     </form> 

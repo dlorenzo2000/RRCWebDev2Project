@@ -41,26 +41,41 @@
             $postid = filter_input(INPUT_GET, 'postid'
                 , FILTER_SANITIZE_NUMBER_INT);            
 
-            $qry = "SELECT * FROM post JOIN restaurant                  
-                WHERE post.postid = :postid 
-                AND post.restaurantid = restaurant.restaurantid LIMIT 1";
-            
+            $qry = "SELECT * 
+                    FROM post 
+                        JOIN restaurant
+                        JOIN foodcategory                  
+                    WHERE post.postid = :postid 
+                    AND post.restaurantid = restaurant.restaurantid
+                    AND post.categoryid = foodcategory.categoryid LIMIT 1";
+
             $stm = $db->prepare($qry);           
             $stm->bindValue(':postid', $postid, PDO::PARAM_INT);
             $stm->execute();
 
             $dat = $stm->fetch();
 
-            $categoryid = $dat['categoryid'];
+            $qryEditCategory = "SELECT * FROM foodcategory JOIN post 
+                WHERE post.categoryid = foodcategory.categoryid 
+                AND post.postid = $postid LIMIT 1";
 
-            $qryGetCateogry = "SELECT * FROM foodcategory
-                 WHERE categoryid = :categoryid LIMIT 1";            
+            $stmEditCategory = $db->prepare($qryEditCategory);
+            $stmEditCategory->execute();
+            $datEditCategory = $stmEditCategory->fetch();            
+        }
 
-            $stmGetCategory = $db->prepare($qryGetCateogry);
-            $stmGetCategory->bindValue(':categoryid', $categoryid , PDO::PARAM_INT);
-            $stmGetCategory->execute();
+        if($_POST && ($_POST['delete'])){ 
+            $postid = filter_input(INPUT_POST, 'postid'
+                , FILTER_SANITIZE_NUMBER_INT);
+            $qry="UPDATE post 
+                  SET active = 0 
+                  WHERE postid = $postid";
+                    
+            $stm=$db->prepare($qry);        
+            $stm->execute();
 
-            $datGetCategory = $stmGetCategory->fetch();                        
+            header("Location: my_reviews.php");
+            exit;
         }
 
         if($_POST){
@@ -80,40 +95,25 @@
                 = (int)(filter_input(INPUT_POST, 'categoryid'
                     , FILTER_SANITIZE_NUMBER_INT));
      
-            $qry = "UPDATE post 
-                    SET post_title=:post_title, post_content=:post_content
-                        , restaurant_rating=:restaurant_rating
-                        , restaurantid=:restaurantid, categoryid=:categoryid
-                    WHERE postid=:postid";
+            $qryPost = "UPDATE post 
+                        SET post_title=:post_title, post_content=:post_content
+                            , restaurant_rating=:restaurant_rating
+                            , restaurantid=:restaurantid, categoryid=:categoryid
+                        WHERE postid=:postid";
 
-            $stm = $db->prepare($qry);
+            $stmPost = $db->prepare($qryPost);
 
-            $stm->bindvalue(':postid', $postid, PDO::PARAM_INT); 
-            $stm->bindValue(':post_title', $post_title, PDO::PARAM_STR);
-            $stm->bindValue(':post_content', $post_content, PDO::PARAM_STR);
-            $stm->bindvalue(':restaurant_rating', $restaurant_rating, PDO::PARAM_INT);
-            $stm->bindvalue(':restaurantid', $restaurantid, PDO::PARAM_INT);
-            $stm->bindvalue(':categoryid', $categoryid, PDO::PARAM_INT);
+            $stmPost->bindvalue(':postid', $postid, PDO::PARAM_INT); 
+            $stmPost->bindValue(':post_title', $post_title, PDO::PARAM_STR);
+            $stmPost->bindValue(':post_content', $post_content, PDO::PARAM_STR);
+            $stmPost->bindvalue(':restaurant_rating', $restaurant_rating, PDO::PARAM_INT);
+            $stmPost->bindvalue(':restaurantid', $restaurantid, PDO::PARAM_INT);
+            $stmPost->bindvalue(':categoryid', $categoryid, PDO::PARAM_INT);
             
-            $stm->execute();
+            $stmPost->execute();
             header("Location: my_reviews.php");
             exit;
-        }
-
-        if($_POST && $postid['delete']){ 
-            $postid=filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
-            $qry="UPDATE post 
-                  SET active=:active 
-                  WHERE postid=:postid";
-                    
-            $stm=$db->prepare($qry);
-            $stm->bindValue(':active', 0, PDO::PARAM_INT);
-            $stm->bindValue(':postid', $postid, PDO::PARAM_INT);
-            $stm->execute();
-
-            header("Location: myreviews.php");
-            exit;
-        }
+        }        
     }
 ?> 
 
@@ -129,22 +129,19 @@
         <textarea name="post_content" rows="10" cols="94"><?=$dat['post_content']?>
         </textarea>
         <br />
-        <label for="restaurant_rating">Rating</label>
+        <label for="restaurant_rating">Rating </label>
         <select name="restaurant_rating">
             <option hidden disabled selected value> 
                 -- select an option -- 
             </option>
-            <option selected><?= $dat['restaurant_rating']?></option>
-            <option value = "1">1</option>
-            <option value = "2">2</option>
-            <option value = "3">3</option>
-            <option value = "4">4</option>
-            <option value = "5">5</option>
-            <option value = "6">6</option>
-            <option value = "7">7</option>
-            <option value = "8">8</option>
-            <option value = "9">9</option>
-            <option value = "10">10</option>
+            <option selected value="<?= $dat['restaurant_rating']?>">
+                <?= $dat['restaurant_rating']?>
+            </option>
+            <?php for($i=1; $i<=10; $i++): ?>
+                <option value = "<?=$i ?>">
+                    <?=$i ?>
+                </option>
+            <?php endfor ?>
         </select> 
         <label for="restaurantid">Restaurant</label>
         <select name="restaurantid">
@@ -152,33 +149,41 @@
                 -- select an option -- 
             </option>             
             <?php if($stmRestaurant->rowCount() > 0): ?>                
-                <option selected value="<?= $dat['restaurantid'] ?>"><?= $dat['restaurant_name'] ?></option>                             
+                <option selected value="<?= $dat['restaurantid'] ?>">
+                    <?= $dat['restaurant_name'] ?>
+                </option>                             
                 <?php while($dat = $stmRestaurant->fetch()): ?>
-                    <option value="<?= $dat['restaurantid'] ?>"> <?= $dat['restaurant_name'] ?> </option>
+                    <option value="<?= $dat['restaurantid'] ?>">
+                        <?= $dat['restaurant_name'] ?> 
+                    </option>
                 <?php endwhile ?>
             <?php endif ?>
         </select> 
+        <a href="restaurant.php">Add restaurant</a>
         <br />
-        <label for="categoryid">Category </label>     
-
+        <label for="categoryid">Category </label>    
         <select name="categoryid">
             <option hidden disabled selected value>
                     -- select an option -- 
             </option>
             <?php if($stmCategory->rowCount() > 0): ?>
-                <option selected value="<?= $dat['categoryid'] ?>"><?=  $datGetCategory['category_name'] ?></option>
-                <?php while($dat = $stmCategory->fetch()): ?>
-                    <option value="<?= $dat['categoryid'] ?>"><?=$dat['category_name'] ?></option>
+                <option selected value="<?= $datEditCategory['categoryid'] ?>">
+                    <?= $datEditCategory['category_name'] ?> 
+                </option>
+                <?php while($datCategory = $stmCategory->fetch()): ?>
+                    <option value="<?= $datCategory['categoryid'] ?>">
+                        <?=$datCategory['category_name'] ?>
+                    </option>                    
                 <?php endwhile ?>
-            <?php endif ?>
+            <?php endif ?>            
         </select> 
+        <a href="category.php">Add category</a>
         <br />
-        <button type="submit" class="btn btn-secondary" id="submit">Save</button>        
-        <button class="btn btn-secondary" onclick="history.back()">Cancel</button>
-        <button type="submit" class="btn btn-secondary" value="Delete" 
+        <button type="submit" class="btn btn-secondary" id="submit">Save</button>  
+        <button class="btn btn-secondary" onclick="history.back()">Cancel</button>   
+        <button type="submit" class="btn btn-secondary" value="delete" name="delete"
             onclick="return confirm('Are you sure?')">Delete</button>
         <br />
-        <br />
+        <br />  
     </form> 
-</div>   
-<?php require_once('footer.php'); ?>
+</div>    

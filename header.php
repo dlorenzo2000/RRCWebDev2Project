@@ -31,7 +31,7 @@
         integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" 
         crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css" type="text/css">
-    <title>Foodzagram</title>
+    <title>Foodzagram version 3.0</title>
 </head>
 <body>   
 <header>

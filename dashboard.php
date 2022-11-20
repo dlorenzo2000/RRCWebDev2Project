@@ -9,10 +9,26 @@
  * Purpose: Administrators access the dashboard to manage users and pages.
  ******************************************************************************/
 
-     require_once('header.php');
+    require_once('header.php');
+    
+    // if the user visits this page and isn't logged in, then redirect
+    if(!($usr_dat = CheckLogin($db))){
+        header('Location: login.php');
+    }
 ?>
 
 <h1>Dashboard</h1>
-Manage USERS REVIEWS CATEGORIES RESTAURANTS
-   
+<br />
+Mangage
+<nav>
+    <ul>
+        <li class="nav-li"><a href="users.php">USERS</a></li>
+        <li class="nav-li"><a href="reviews.php">REVIEWS</a></li>
+        <li class="nav-li"><a href="category.php">CATEGORIES</a></li>
+        <li class="nav-li"><a href="restaurant.php">RESTAURANTS</a></li>
+    </ul> 
+<br />
+<br />
+<br /> 
+<hr>   
 <?php require_once('footer.php'); ?>

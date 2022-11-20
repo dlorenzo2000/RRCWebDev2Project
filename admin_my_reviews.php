@@ -9,10 +9,12 @@
  * Purpose: Displays all views for admin
  *****************************************************************************/
 
-    session_start();
-
-    require('connect.php');
     require('header.php');
+
+    // if the user visits this page and isn't logged in, then redirect
+    if(!($usr_dat = CheckLogin($db))){
+        header('Location: login.php');
+    }    
 
     $userid =  $_SESSION['userid'];
 

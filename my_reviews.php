@@ -10,6 +10,11 @@
  *****************************************************************************/
 
     require_once('header.php');
+
+    // if the user visits this page and isn't logged in, then redirect
+    if(!($usr_dat = CheckLogin($db))){
+        header('Location: login.php');
+    }
     
     $userid =  $_SESSION['userid']; 
 
@@ -17,39 +22,26 @@
 
     if($_POST){
         if($_POST['sort-reviews'] == "newest-reviews")
-            $sortCriteria = "ORDER BY post.created_date DESC";
+            $sortCriteria = "ORDER BY post.modified_date DESC";
         elseif($_POST['sort-reviews'] == "restaurant-name")
             $sortCriteria = "ORDER BY restaurant.restaurant_name";
         else{
             $sortCriteria = "ORDER BY foodcategory.category_name";
-        }
-        $qryPost = "SELECT * 
-                    FROM post       
-                    JOIN foodcategory                
-                    INNER JOIN restaurant   
-                    WHERE post.restaurantid = restaurant.restaurantid 
-                        AND foodcategory.categoryid = post.categoryid
-                        AND post.active = 1 
-                        AND post.userid = $userid $sortCriteria";               
-                    
-        $stmPost = $db->prepare($qryPost);
-    
-        $stmPost->execute();
+        }   
     }    
-    else{
-        $qryPost = "SELECT * 
-                    FROM post       
-                    JOIN foodcategory                
-                    INNER JOIN restaurant   
-                    WHERE post.restaurantid = restaurant.restaurantid 
-                        AND foodcategory.categoryid = post.categoryid
-                        AND post.active = 1 
-                        AND post.userid = $userid $sortCriteria";               
-                        
-        $stmPost = $db->prepare($qryPost);
-        
-        $stmPost->execute(); 
-    } 
+   
+    $qryPost = "SELECT * 
+                FROM post       
+                JOIN foodcategory                
+                INNER JOIN restaurant   
+                WHERE post.restaurantid = restaurant.restaurantid 
+                    AND foodcategory.categoryid = post.categoryid
+                    AND post.active = 1 
+                    AND post.userid = $userid $sortCriteria";               
+                    
+    $stmPost = $db->prepare($qryPost);
+    
+    $stmPost->execute(); 
 ?>
   
 <div class="row">
@@ -60,9 +52,12 @@
 </div>     
 <div class="row">            
     <?php if($stmPost->rowCount() > 0): ?> 
-        <form action="my_reviews.php" method="post">
+        <form action="my_reviews.php" method="post">            
             <label for="sort-reviews">Sort reviews by:</label>
-            <select name="sort-reviews">                 
+            <select name="sort-reviews">    
+                <option hidden disabled selected value>
+                        -- select an option -- 
+                </option>             
                 <option value="restaurant-name">Restaurant Name</option>                 
                 <option value="food-category">Food Category</option>
                 <option value="newest-reviews">Newest reviews</option> 
@@ -72,14 +67,18 @@
         <ul>                
             <?php while($datPost = $stmPost->fetch()): ?>   
                 <li>
-                    <h5><?= $datPost['restaurant_name'] ?> - <?= $datPost['category_name']?></h5>                            
-                    <h6><?= $datPost['post_title'] ?> - <?= $datPost['restaurant_rating'] ?>/10</h6>
-                    <h6>
+                    <?php if(strtotime($datPost['modified_date']) < strtotime($datPost['created_date']))
+                        $modified = "Updated on " . date('F d, Y h:i A', strtotime($datPost['modified_date']));
+                    ?>
+                    <h5><?= $datPost['restaurant_name'] ?> - <?= $datPost['category_name']?></h5>  
+                    <a href="my_review_edit.php?postid=<?= $datPost['postid']?>">EDIT</a>                          
+                    <h6><?= $datPost['post_title'] ?> - RATING <?= $datPost['restaurant_rating'] ?>/10</h6>                    
                         Posted on <?= date('F d, Y h:i A', strtotime($datPost['created_date'])) ?>
-                        <a href="update_review.php?postid=<?= $datPost['postid']?>">EDIT</a>                                
-                    </h6>
+                        <br />  
+                        <span><?php if(isset($modified)) echo $modified; ?></span>       
                     <p><?= $datPost['post_content'] ?></p>   
                 </li>
+                <hr>
             <?php endwhile ?>
         </ul>
     <?php else: ?>
