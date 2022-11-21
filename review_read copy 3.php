@@ -5,40 +5,11 @@
  * Course: Web Development - 2008 (228566)
  * Assignment: Final Project
  * Created: Nov 20, 2022
- * Updated: Nov 21, 2022 
+ * Updated: Nov 20, 2022 
  * Purpose: Page for viewing whole review and comments posted by others
  ******************************************************************************/
 
     require_once('header.php');   
-
-    if($_SERVER['REQUEST_METHOD'] === "POST"){
-        if($_POST && empty(trim($_POST['comment']))){
-            $comment_error = "* Comment form cannot be blank."; 
-        }
-        else{ 
-            if($usr_dat = CheckLogin($db)){
-                $userid = $usr_dat['userid'];
-            }        
-            else{
-                $userid = 0;
-            }
-                                
-            $comment = trim(filter_input(INPUT_POST, 'comment'
-                , FILTER_SANITIZE_FULL_SPECIAL_CHARS));
-            $postid = filter_input(INPUT_POST, 'postid'
-                , FILTER_SANITIZE_FULL_SPECIAL_CHARS);                    
-        
-            $qryComment = "INSERT INTO comment (comment, userid, postid)
-                VALUES (:comment, :userid, :postid)";
-
-            $stmComment = $db->prepare($qryComment);
-            $stmComment->bindValue(':comment', $comment);
-            $stmComment->bindValue(':userid', $userid);
-            $stmComment->bindValue(':postid', $postid);
-            $stmComment->execute();  
-
-        }
-    }           
     
     // get the postid from the selected review to output to the page on load
     if(isset($_GET['postid'])){
@@ -61,18 +32,46 @@
 
         $dat = $stm->fetch();
 
-        $qryEditCategory = "SELECT * FROM foodcategory JOIN post WHERE 
-            post.categoryid = foodcategory.categoryid AND post.postid = $postid LIMIT 1";
-     
+        $qryEditCategory = "SELECT * FROM foodcategory JOIN post 
+            WHERE post.categoryid = foodcategory.categoryid 
+            AND post.postid = $postid LIMIT 1";
+
         $stmEditCategory = $db->prepare($qryEditCategory);
         $stmEditCategory->execute();
         $datEditCategory = $stmEditCategory->fetch();     
         
-        $qryComment = "SELECT * FROM comment LEFT JOIN user ON comment.userid = user.userid  
-            WHERE comment.postid = $postid ORDER BY comment_date DESC";
-         
+        $qryComment = "SELECT * FROM comment WHERE postid = $postid";
         $stmComment = $db->prepare($qryComment);
-        $stmComment->execute();             
+        $stmComment->execute();        
+        
+        if($_SERVER['REQUEST_METHOD'] === "POST"){
+            if($_POST && empty(trim($_POST['comment']))){
+                $comment_error = "* Comment form cannot be blank.";
+                
+            }
+            else{ 
+                if($usr_dat = CheckLogin($db)){
+                    $userid = $usr_dat['userid'];
+                }        
+                else{
+                    $userid = 0;
+                }
+                                    
+                $comment = trim(filter_input(INPUT_POST, 'comment'
+                    , FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+                $postid = filter_input(INPUT_POST, 'postid'
+                    , FILTER_SANITIZE_FULL_SPECIAL_CHARS);                    
+            
+                $qryComment = "INSERT INTO comment (comment, userid, postid)
+                    VALUES (:comment, :userid, :postid)";
+    
+                $stmComment = $db->prepare($qryComment);
+                $stmComment->bindValue(':comment', $comment);
+                $stmComment->bindValue(':userid', $userid);
+                $stmComment->bindValue(':postid', $postid);
+                $stmComment->execute();  
+            }                             
+        }
      }     
 ?> 
 
@@ -95,8 +94,10 @@
     <br />
     <br />
     <br /> 
-    
-    <form action="review_read.php?postid=<?= $dat['postid']?>" method="post">
+    <div class="col">
+        <button onclick="location.href='post_comment.php?postid=<?= $dat['postid']?>'" 
+            class="btn btn-secondary">Comment</button>
+    <!-- <form action="review_read.php?postid=<?= $dat['postid']?>" method="post"> -->
         <input type="hidden" name="postid" value="<?=$dat['postid']?>"> 
         <label for="comment">
             Comment
@@ -128,16 +129,10 @@
                             , strtotime($datComment['modified_date']));
                     ?>
                     <p><?= $datComment['comment'] ?></p>
-                    Comment posted by 
-                    <?php if($datComment['userid'] == 0 ): ?>
-                        Anonymous user
-                    <?php else: ?>
-                        <?=$datComment['first_name']; ?>
-                    <?php endif ?> 
-                    <br />
-                    on <?= date('F d, Y h:i A', strtotime($datComment['comment_date'])) ?>
+                    Posted on <?= date('F d, Y h:i A'
+                        , strtotime($datComment['comment_date'])) ?>
                     <br />  
-                    <span><?php if(isset($modified)) echo $modified; ?></span>                          
+                    <span><?php if(isset($modified)) echo $modified; ?></span>        
                 </li>
                 <hr>          
             <?php endwhile ?>               

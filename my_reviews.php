@@ -79,6 +79,7 @@
                         <br />  
                         <span><?php if(isset($modified)) echo $modified; ?></span>       
                     <p><?= $datPost['post_content'] ?></p>   
+                    <a href="review_read.php?postid=<?= $datPost['postid']?>">READ COMMENTS</a> 
                 </li>
                 <hr>
             <?php endwhile ?>

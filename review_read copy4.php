@@ -40,16 +40,11 @@
         $stmEditCategory->execute();
         $datEditCategory = $stmEditCategory->fetch();     
         
-        $qryComment = "SELECT * FROM comment WHERE postid = $postid";
+        $qryComment = "SELECT * FROM comment 
+            WHERE postid = $postid ORDER BY comment_date DESC";
         $stmComment = $db->prepare($qryComment);
-        $stmComment->execute();
-
-        if($_SERVER['REQUEST_METHOD'] === "POST"){
-            if($_POST && empty($_POST['post-comment'])){
-                $post_comment_error = "* Comment form cannot be blank.";
-            }
-        } 
-    }
+        $stmComment->execute();                
+     }     
 ?> 
 
 <div class="row justify-content-center">
@@ -57,10 +52,8 @@
     <br />
     <br />        
     <br />        
-    <br />         
-      
+    <br />               
     <h5><?= $dat['restaurant_name'] ?> - <?= $datEditCategory['category_name'] ?></h5>
-
     <h5>Title - <?=$dat['post_title']?></h5>
     <?=$dat['post_content']?> 
     <br /> 
@@ -72,24 +65,32 @@
     <?php if(isset($display_date)) echo $display_date; ?>     
     <br />
     <br />
-    <br />
+    <br /> 
     <div class="col">
         <button onclick="location.href='post_comment.php?postid=<?= $dat['postid']?>'" 
-            class="btn btn-secondary">Comment</button> 
-</div> 
+            class="btn btn-secondary">Comment</button>
+        <input type="hidden" name="postid" value="<?=$dat['postid']?>">         
+    </form> 
 <div class="row justify-content-center">
      <br />
     <br />
     <?php if($stmComment->rowCount() > 0): ?>
         <ul>
             <?php while($datComment = $stmComment->fetch()): ?>
+                <hr>
                 <li>
-                    <p><?= $datComment ?></p>
-                    Posted on <?= date('F d, Y h:i A', strtotime($datComment['created_date'])) ?>
+                    <?php if(strtotime($datComment['modified_date']) 
+                        < strtotime($datComment['comment_date']))
+                        $modified = "Updated on " . date('F d, Y h:i A'
+                            , strtotime($datComment['modified_date']));
+                    ?>
+                    <p><?= $datComment['comment'] ?></p>
+                    Posted on <?= date('F d, Y h:i A'
+                        , strtotime($datComment['comment_date'])) ?>
                     <br />  
                     <span><?php if(isset($modified)) echo $modified; ?></span>        
                 </li>
-                <hr>
+                <hr>          
             <?php endwhile ?>               
             </ul>
     <?php else: ?>
