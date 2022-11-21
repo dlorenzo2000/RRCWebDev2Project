@@ -76,6 +76,65 @@
 ?>
 
 <h1>Restaurants</h1>
+<form action="restaurant.php" method="post">
+    <label for="restaurant-name">
+        Restaurant name
+    </label>
+    <input type="text" name="restaurant-name">
+    <span>
+        <?php if(isset($restaurant_name_error)) echo $restaurant_name_error; ?>
+    </span> 
+    <br />
+    <label for="restaurant-address">
+        Address
+    </label>
+    <input type="text" name="restaurant-address" size=100>
+    <span>
+        <?php if(isset($restaurant_address_error)) echo $restaurant_address_error; ?>
+    </span>     
+    <br/>
+    <label for="cityid">City</label>
+    <select name="cityid" >
+        <?php if($stmCity->rowCount() > 0): ?>
+            <?php while ($datCity = $stmCity->fetch()): ?>
+                <option value="<?= $datCity['cityid']?>"> 
+                    <?= $datCity['city_name'] ?>
+                </option>
+            <?php endwhile ?>
+        <?php endif ?>
+    </select>
+    <label for="provinceid">Province</label>
+    <select name="provinceid">
+        <?php if($stmProvince->rowCount() >0): ?>
+            <?php while($datProvince = $stmProvince->fetch()): ?>
+                <option value="<?= $datProvince['provinceid'] ?>">
+                    <?= $datProvince['province_name'] ?>
+                </option>
+            <?php endwhile ?>
+        <?php endif ?>
+    </select>
+    <label for="categoryid">Category</label>
+    <select name="categoryid">
+        <?php if($stmCategory->rowCount() >0): ?>
+            <?php while($datCategory = $stmCategory->fetch()): ?>
+                <option value="<?= $datCategory['categoryid'] ?>">
+                    <?= $datCategory['category_name'] ?>
+                </option>
+            <?php endwhile ?>
+        <?php endif ?>
+    </select>
+    <br />
+    <br />
+    <button type="submit" class="btn btn-secondary">Add</button>
+    <?php if($usr_dat['admin'] === 1): ?>
+        <button type="button" class="btn btn-secondary" 
+            onclick="window.location.replace('my_reviews.php')">Edit/button>
+        <button type="button" class="btn btn-secondary" 
+            onclick="window.location.replace('my_reviews.php')">De-activate</button>
+    <?php endif ?>
+    <button type="button" class="btn btn-secondary" 
+        onclick="window.location.reload()">Clear</button>
+</form>
 <br />
 <?php if($stmRestaurants->rowCount() > 0): ?> 
     <?php while($datRestaurants = $stmRestaurants->fetch()): ?>
