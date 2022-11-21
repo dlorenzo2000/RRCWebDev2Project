@@ -16,7 +16,7 @@
     if(isset($_SESSION['username'])){
         $logout_link = "Logout";
         $my_reviews_link = "My Reviews";
-        $dashboard = "Dashboard";
+        $dashboard = "Dashboard";        
     }
 ?>
 
@@ -53,6 +53,9 @@
                     <li class="top-nav-li"><a href="my_reviews.php">
                         <?php if(isset($logout_link)) echo $my_reviews_link; ?> </a>
                     </li>   
+                    <li class="top-nav-li"><a href="my_comments.php">
+                        <?php if(isset($logout_link)) echo "My Comments" ?> </a>
+                    </li> 
                     <li class="top-nav-li"><a href="dashboard.php">
                         <?php if(isset($_SESSION['username']) && ($usr_dat = CheckLogin($db)) 
                             && ($usr_dat['admin'] == 1)) echo "Dashboard"; ?> </a>

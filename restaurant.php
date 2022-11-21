@@ -76,6 +76,7 @@
 ?>
 
 <h1>Restaurants</h1>
+<?php if(isset($usr_dat)):?>
 <form action="restaurant.php" method="post">
     <label for="restaurant-name">
         Restaurant name
@@ -135,6 +136,7 @@
     <button type="button" class="btn btn-secondary" 
         onclick="window.location.reload()">Clear</button>
 </form>
+<?php endif ?>
 <br />
 <?php if($stmRestaurants->rowCount() > 0): ?> 
     <?php while($datRestaurants = $stmRestaurants->fetch()): ?>

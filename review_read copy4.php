@@ -5,7 +5,7 @@
  * Course: Web Development - 2008 (228566)
  * Assignment: Final Project
  * Created: Nov 20, 2022
- * Updated: Nov 20, 2022 
+ * Updated: Nov 21, 2022 
  * Purpose: Page for viewing whole review and comments posted by others
  ******************************************************************************/
 

@@ -108,8 +108,7 @@
         <br />
         <br />
         <button type="submit" class="btn btn-secondary" id="submit">Add</button>        
-        <button type="button" class="btn btn-secondary" 
-            onclick="window.location.reload()">Clear</button>
+        <button type="reset" class="btn btn-secondary">Clear</button>
         <br />
         <br />
         <br />  
@@ -123,7 +122,7 @@
                 <hr>
                 <li>
                     <?php if(strtotime($datComment['modified_date']) 
-                        < strtotime($datComment['comment_date']))
+                        > strtotime($datComment['comment_date']))
                         $modified = "Updated on " . date('F d, Y h:i A'
                             , strtotime($datComment['modified_date']));
                     ?>

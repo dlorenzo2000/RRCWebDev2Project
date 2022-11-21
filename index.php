@@ -14,11 +14,17 @@
  
 <h1>Main</h1>
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
         <a href="restaurant.php">Restaurants</a>
-    </div>
-    <div class="col-md-6">
+    </div>    
         <a href="reviews.php">Reviews</a>
+    </div>
+    <div class="col-md-4">
+        <?php if(($usr_dat = CheckLogin($db))):?>
+            <div class="col-md-4">
+                <a href="my_comments.php">My Comments</a>
+            </div>
+        <?php endif ?>
     </div>
 </div>  
 <?php require_once('footer.php'); ?>
