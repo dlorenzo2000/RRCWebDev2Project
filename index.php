@@ -12,10 +12,10 @@
     require_once('header.php');
 ?>
  
-<h1>Explore</h1>
+<h1>Main</h1>
 <div class="row">
     <div class="col-md-6">
-        <a href="restaurants.php">Restaurants</a>
+        <a href="restaurant.php">Restaurants</a>
     </div>
     <div class="col-md-6">
         <a href="reviews.php">Reviews</a>

@@ -13,14 +13,20 @@
     
     // checks to see if the user is logged in and redirects to login if not
     if(!($usr_dat = CheckLogin($db))){
-        header("Location: login.php");
+        LoginRedirect();
     }
     else{
         // populate the drop down boxes with the following code
         $username = $_SESSION['username'];
 
-        // query the user table
-        $qryUser = "SELECT * FROM User WHERE username = $username LIMIT 1";
+        if($usr_dat['admin'] == 1){
+            // query the user table for all posts
+            $qryUser = "SELECT * FROM User";
+        }
+        else{
+            // query the user table for only one user
+            $qryUser = "SELECT * FROM User WHERE username = $username LIMIT 1";    
+        } 
         
         // query the restaurant table
         $qryRestaurant = "SELECT * FROM Restaurant";
@@ -119,11 +125,9 @@
 
 <div class="row justify-content-center">
     <h1>EDIT review</h1>
-    <form method="post" action="update_review.php">
+    <form method="post" action="my_review_edit.php">
         <input type="hidden" name="postid" value="<?=$dat['postid']?>">
-
-        <label for="post_title">Title</label>
-        
+        <label for="post_title">Title</label>        
         <input type="text" name="post_title" value="<?=$dat['post_title']?>">
         <br />
         <textarea name="post_content" rows="10" cols="94"><?=$dat['post_content']?>
@@ -180,10 +184,11 @@
         <a href="category.php">Add category</a>
         <br />
         <button type="submit" class="btn btn-secondary" id="submit">Save</button>  
-        <button class="btn btn-secondary" onclick="history.back()">Cancel</button>   
+        <button class="btn btn-secondary"   
+            onclick="window.location.replace('my_reviews.php')">Cancel</button>
         <button type="submit" class="btn btn-secondary" value="delete" name="delete"
             onclick="return confirm('Are you sure?')">Delete</button>
         <br />
         <br />  
-    </form> 
+    </form>  
 </div>    

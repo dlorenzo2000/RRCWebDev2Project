@@ -48,7 +48,7 @@
                         <?php if(isset($_SESSION['username'])) 
                             echo "Hi " . strtoupper($_SESSION['username']) . "!";?>
                     </li>          
-                    <li class="top-nav-li"><a href="index.php">Explore</a></li>          
+                    <li class="top-nav-li"><a href="index.php">Main</a></li>          
                     
                     <li class="top-nav-li"><a href="my_reviews.php">
                         <?php if(isset($logout_link)) echo $my_reviews_link; ?> </a>

@@ -19,7 +19,8 @@ ul{
 .top-nav-li,
 .bottom-nav-li,
 .top-nav-search,
-.nav-li{
+.nav-li,
+.tbl-li{
     display: inline-block;
 } 
 

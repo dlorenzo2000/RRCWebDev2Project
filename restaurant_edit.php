@@ -13,7 +13,7 @@
      
     // if the user visits this page and isn't logged in, then redirect
     if(!($usr_dat = CheckLogin($db))){
-        header('Location: login.php');
+        LoginRedirect();
     }
     else{
         // fill in drop down field for city
@@ -53,6 +53,46 @@
             $stm->execute();
             
             $dat = $stm->fetch();
+
+            $qryActive = "SELECT * FROM restaurant
+                WHERE restaurantid = $restaurantid LIMIT 1";
+            $stmActive = $db->prepare($qryActive);
+            $stmActive->execute();
+            $datActive = $stmActive->fetch();
+        }
+
+        if($_POST && empty(trim($_POST['restaurant-name'])))
+        $restaurant_name_error = "* Restaurant name cannot be blank.";
+
+        if($_POST && empty(trim($_POST['restaurant-address'])))
+            $restaurant_address_error = "* Address cannot be blank."; 
+
+        if($_POST && isset($_POST['delete'])){ 
+            $restaurantid = filter_input(INPUT_POST, 'restaurantid'
+                , FILTER_SANITIZE_NUMBER_INT);
+            $qry="UPDATE restaurant
+                  SET active = 0 
+                  WHERE restaurantid = $restaurantid";
+                    
+            $stm=$db->prepare($qry);        
+            $stm->execute();  
+
+            header("Location: restaurant.php");
+            exit;
+        }
+
+        if($_POST && isset($_POST['reactivate'])){ 
+            $restaurantid = filter_input(INPUT_POST, 'restaurantid'
+                , FILTER_SANITIZE_NUMBER_INT);
+            $qry="UPDATE restaurant
+                  SET active = 1
+                  WHERE restaurantid = $restaurantid";
+                    
+            $stm=$db->prepare($qry);        
+            $stm->execute();  
+
+            header("Location: restaurant.php");
+            exit;
         }
 
         if($_SERVER['REQUEST_METHOD'] === "POST" && !empty(trim($_POST['restaurant-name'])
@@ -92,45 +132,8 @@
             header('location: restaurant.php');
             exit;
         }     
-        else{
-            if($_POST && empty(trim($_POST['restaurant-name'])))
-                $restaurant_name_error = "* Restaurant name cannot be blank.";
-    
-            if($_POST && empty(trim($_POST['restaurant-address'])))
-                $restaurant_address_error = "* Address cannot be blank."; 
-        }    
-    }
-    
-    if($_POST && $_POST['deactivate']){ 
-        $restaurantid = (int)filter_input(INPUT_POST, 'restaurantid'
-            , FILTER_SANITIZE_NUMBER_INT);
-        $qry="UPDATE restaurant
-              SET active = 0 
-              WHERE restaurantid = $restaurantid";
-
-              $deactivate->execute();
-                
-        $stm=$db->prepare($qry);        
-        $stm->execute();  
-
-        header("Location: category.php");
-        exit;
-    }
-
-    if($_POST && $_POST['activate']){ 
-        $restaurantid = (int)filter_input(INPUT_POST, 'restaurantid'
-            , FILTER_SANITIZE_NUMBER_INT);
-        $qry="UPDATE restaurant
-              SET active = 1 
-              WHERE restaurantid = $restaurantid";
-                
-        $stm=$db->prepare($qry);        
-        $stm->execute();  
-
-            $reactivate->execute();
-        header("Location: category.php");
-        exit;
-    }
+  
+    }    
 ?>
 
 <h1>Edit restaurant</h1>
@@ -157,8 +160,10 @@
     <label for="cityid">City</label>
     <select name="cityid" >
         <?php if($stmCity->rowCount() > 0): ?>
-            <option selected value="<?= $dat['cityid'] ?>">
-                <?= $dat['city_name'] ?> 
+            <option selected value="
+                <?php if(isset($dat)): ?>
+                    <?= $dat['cityid'] ?>"><?= $dat['city_name'] ?> 
+                <?php endif ?>
             </option>
             <?php while ($datCity = $stmCity->fetch()): ?>
                 <option value="<?= $datCity['cityid']?>"> 
@@ -170,8 +175,10 @@
     <label for="provinceid">Province</label>
     <select name="provinceid">
         <?php if($stmProvince->rowCount() >0): ?>
-            <option selected value="<?= $dat['provinceid'] ?>">
-                <?= $dat['province_name'] ?> 
+            <option selected value="
+                <?php if(isset($dat)): ?> 
+                    <?= $dat['provinceid'] ?>"><?= $dat['province_name'] ?> 
+                <?php endif?>
             </option>
             <?php while($datProvince = $stmProvince->fetch()): ?>
                 <option value="<?= $datProvince['provinceid'] ?>">
@@ -183,8 +190,11 @@
     <label for="categoryid">Category</label>
     <select name="categoryid">
         <?php if($stmCategory->rowCount() >0): ?> 
-            <option selected value="<?= $dat['categoryid'] ?>">
-                <?= $dat['category_name'] ?> 
+            <option selected value="
+                <?php if(isset($dat)): ?>
+                    <?= $dat['categoryid'] ?>">
+                    <?= $dat['category_name'] ?> 
+                <?php endif ?>
             </option> 
             <?php while($datCategory = $stmCategory->fetch()): ?>
                 <option value="<?= $datCategory['categoryid'] ?>">
@@ -195,19 +205,22 @@
     </select>
     <br />
     <br />
-    <button type="submit" class="btn btn-secondary" name="save" value="save">Save</button>        
-    <button type="button" class="btn btn-secondary" 
-        onclick="window.location.replace('restaurant.php')">Back</button>
-        <?php if(($usr_dat['admin'] == 1) && ($dat['active'] == 1)): ?>
-            <button type="submit" class="btn btn-secondary" value="deactivate" name="deactivate"
-                onclick="return confirm('Are you sure?')">De-activate</button>
-        <?php else: ?>        
+    <button type="submit" class="btn btn-secondary" 
+        name="save" value="save">Save</button>        
+    <button type="button" class="btn btn-secondary"   
+        onclick="window.location.replace('restaurant.php')">Cancel</button>
+    <?php if($usr_dat['admin'] == 1): ?> 
+        <?php if(isset($datActive)): ?>
+            <?php if ($datActive['active'] == 1): ?>
+                <button type="submit" class="btn btn-secondary" value="delete" name="delete"
+                    onclick="return confirm('Are you sure?')">De-activate</button>
+            <?php else: ?>        
             <button type="submit" class="btn btn-secondary" 
                 value="Re-activate" name="reactivate">Re-activate</button>
-        <?php endif ?> 
+            <?php endif ?>
+        <?php endif ?>
+    <?php endif ?>  
 </form>
-
-status <?= $dat['active']; ?>
 <br />
 <br />
 <br />  

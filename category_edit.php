@@ -13,7 +13,7 @@
      
     // if the user visits this page and isn't logged in, then redirect
     if(!($usr_dat = CheckLogin($db))){
-        header('Location: login.php');
+        LoginRedirect();
     }
     else{
         if(isset($_GET['categoryid'])){
@@ -33,53 +33,54 @@
             
         if($_POST && empty(trim($_POST['category_name']))){
             $category_name_error = "* Category name cannot be blank.";            
-        }        
-
-        if($_POST && $_POST['save'] && !empty(trim($_POST['category_name']))){
-            $categoryid = (int)filter_input(INPUT_POST, 'categoryid'
-                , FILTER_SANITIZE_NUMBER_INT);  
-            $category_name = trim(filter_input(INPUT_POST, 'category_name'
-                , FILTER_SANITIZE_FULL_SPECIAL_CHARS));
-        
-            $qryCategory = "UPDATE foodcategory
-                            SET category_name = :category_name
-                            WHERE categoryid = :categoryid";
-
-            $stmCategory = $db->prepare($qryCategory);
-            $stmCategory->bindValue(':category_name', $category_name, PDO::PARAM_STR); 
-            $stmCategory->bindValue(':categoryid', $categoryid, PDO::PARAM_INT); 
-            $stmCategory->execute();     
+        } 
+        else{      
+            if($_POST && $_POST['save'] && !empty(trim($_POST['category_name']))){
+                $categoryid = (int)filter_input(INPUT_POST, 'categoryid'
+                    , FILTER_SANITIZE_NUMBER_INT);  
+                $category_name = trim(filter_input(INPUT_POST, 'category_name'
+                    , FILTER_SANITIZE_FULL_SPECIAL_CHARS));
             
-            header('Location: category.php');
-            exit;
-        }  
-        
-        if($_POST && $_POST['delete']){ 
-            $categoryid = filter_input(INPUT_POST, 'categoryid'
-                , FILTER_SANITIZE_NUMBER_INT);
-            $qry="UPDATE foodcategory
-                  SET active = 0 
-                  WHERE categoryid = $categoryid";
-                    
-            $stm=$db->prepare($qry);        
-            $stm->execute();  
+                $qryCategory = "UPDATE foodcategory
+                                SET category_name = :category_name
+                                WHERE categoryid = :categoryid";
 
-            header("Location: category.php");
-            exit;
-        }
+                $stmCategory = $db->prepare($qryCategory);
+                $stmCategory->bindValue(':category_name', $category_name, PDO::PARAM_STR); 
+                $stmCategory->bindValue(':categoryid', $categoryid, PDO::PARAM_INT); 
+                $stmCategory->execute();     
+                
+                header('Location: category.php');
+                exit;
+            }  
+            
+            if($_POST && $_POST['delete']){ 
+                $categoryid = filter_input(INPUT_POST, 'categoryid'
+                    , FILTER_SANITIZE_NUMBER_INT);
+                $qry="UPDATE foodcategory
+                    SET active = 0 
+                    WHERE categoryid = $categoryid";
+                        
+                $stm=$db->prepare($qry);        
+                $stm->execute();  
 
-        if($_POST && $_POST['reactivate']){ 
-            $categoryid = filter_input(INPUT_POST, 'categoryid'
-                , FILTER_SANITIZE_NUMBER_INT);
-            $qry="UPDATE foodcategory
-                  SET active = 1
-                  WHERE categoryid = $categoryid";
-                    
-            $stm=$db->prepare($qry);        
-            $stm->execute();  
+                header("Location: category.php");
+                exit;
+            }
 
-            header("Location: category.php");
-            exit;
+            if($_POST && $_POST['reactivate']){ 
+                $categoryid = filter_input(INPUT_POST, 'categoryid'
+                    , FILTER_SANITIZE_NUMBER_INT);
+                $qry="UPDATE foodcategory
+                    SET active = 1
+                    WHERE categoryid = $categoryid";
+                        
+                $stm=$db->prepare($qry);        
+                $stm->execute();  
+
+                header("Location: category.php");
+                exit;
+            }
         }
     }
 ?>
@@ -99,16 +100,16 @@
     <br />
     <button type="submit" class="btn btn-secondary" name="save" value="save">Save</button>        
     <button type="button" class="btn btn-secondary" 
-        onclick="window.location.replace('category.php')">Back</button>
-    <?php if(($usr_dat['admin'] == 1) && ($dat['active'] == 1)): ?>
+        onclick="window.location.replace('category.php')">Cancel</button>
+    <?php if($usr_dat['admin'] == 1): ?>
         <button type="submit" class="btn btn-secondary" value="delete" name="delete"
             onclick="return confirm('Are you sure?')">De-activate</button>
     <?php else: ?>        
         <button type="submit" class="btn btn-secondary" 
             value="Re-activate" name="reactivate">Re-activate</button>
-    <?php endif ?> 
+    <?php endif ?>   
     <br />
     <br />
     <br />   
-</form>  
-<?php require_once('footer.php'); ?>
+</form>
+ <?php require_once('footer.php'); ?>

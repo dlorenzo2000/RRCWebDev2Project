@@ -13,7 +13,7 @@
     
     // if the user visits this page and isn't logged in, then redirect
     if(!($usr_dat = CheckLogin($db))){
-        header('Location: login.php');
+        LoginRedirect();
     }
 ?>
 
@@ -30,5 +30,4 @@ Mangage
 <br />
 <br />
 <br /> 
-<hr>   
 <?php require_once('footer.php'); ?>

@@ -31,12 +31,16 @@
                 $usr_dat = $stm->fetch();                             
                 return $usr_dat;
             }
-        }
-        else{
-            // redirect to login if user tries to access pages that
-            // only registered users are allowed
+        }    
+    }
+
+    // This function redirects a visitor to the site to log in if they
+    // are trying to access a page that only registered site users and 
+    // admins have access to.
+    function LoginRedirect(){
+        if(!isset(($_SESSION['username']))){
             header("Location: login.php");
-            die;
-        }
+            die;    
+        }       
     }
 ?>

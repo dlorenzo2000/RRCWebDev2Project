@@ -13,7 +13,7 @@
      
     // if the user visits this page and isn't logged in, then redirect
     if(!($usr_dat = CheckLogin($db))){
-        header('Location: login.php');        
+        LoginRedirect();        
     }
     else{
         if($_SERVER['REQUEST_METHOD'] === "POST"){

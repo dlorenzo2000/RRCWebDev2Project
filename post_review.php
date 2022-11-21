@@ -13,7 +13,7 @@
 
     // checks to see if the user is logged in and redirects to login if not
     if(!($usr_dat = CheckLogin($db))){
-        header("Location: login.php");
+        LoginRedirect();
     }
     else{
 
