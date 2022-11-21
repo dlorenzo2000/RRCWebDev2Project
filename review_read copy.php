@@ -43,36 +43,13 @@
         $qryComment = "SELECT * FROM comment WHERE postid = $postid";
         $stmComment = $db->prepare($qryComment);
         $stmComment->execute();
-        
-        
-        if($_POST){
-            if($_POST && empty(trim($_POST['comment']))){
+
+        if($_SERVER['REQUEST_METHOD'] === "POST"){
+            if($_POST && empty($_POST['post-comment'])){
                 $post_comment_error = "* Comment form cannot be blank.";
             }
-            else{ 
-                if($usr_dat = CheckLogin($db)){
-                    $userid = $usr_dat['userid'];
-                }        
-                else{
-                    $userid = 0;
-                }
-                                    
-                $comment = trim(filter_input(INPUT_POST, 'comment'
-                    , FILTER_SANITIZE_FULL_SPECIAL_CHARS));
-                $postid = filter_input(INPUT_POST, 'postid'
-                    , FILTER_SANITIZE_FULL_SPECIAL_CHARS);                    
-            
-                $qryComment = "INSERT INTO comment (comment, userid, postid)
-                    VALUES (:comment, :userid, :postid)";
-    
-                $stmComment = $db->prepare($qryComment);
-                $stmComment->bindValue(':comment', $comment);
-                $stmComment->bindValue(':userid', $userid);
-                $stmComment->bindValue(':postid', $postid);
-                $stmComment->execute();  
-            }                             
-        }
-     }     
+        } 
+    }
 ?> 
 
 <div class="row justify-content-center">
@@ -95,43 +72,24 @@
     <?php if(isset($display_date)) echo $display_date; ?>     
     <br />
     <br />
-    <br /> 
-    <form action="review_read.php?postid=<?= $dat['postid']?>" method="post">
-        <input type="hidden" name="postid" value="<?=$dat['postid']?>"> 
-        <label for="comment">
-            Comment
-        </label>
-        <input type="text" size="125" name="comment">
-        <span>
-            <?php if(isset($comment_error)) echo $comment_error; ?>
-        </span> 
-        <br />
-        <br />
-        <button type="submit" class="btn btn-secondary" id="submit">Add</button>        
-        <button type="button" class="btn btn-secondary" 
-            onclick="window.location.reload()">Clear</button>
-        <br />
-        <br />
-        <br />  
-    </form> 
+    <br />
+    <div class="col">
+        <button onclick="location.href='post_comment.php?postid=<?= $dat['postid']?>'" 
+            class="btn btn-secondary">Comment</button> 
+</div> 
 <div class="row justify-content-center">
      <br />
     <br />
     <?php if($stmComment->rowCount() > 0): ?>
         <ul>
             <?php while($datComment = $stmComment->fetch()): ?>
-                <hr>
                 <li>
-                    <?php if(strtotime($datComment['modified_date']) < strtotime($datComment['comment_date']))
-                        $modified = "Updated on " . date('F d, Y h:i A', strtotime($datComment['modified_date']));
-                    ?>
-                    <p><?= $datComment['comment'] ?></p>
-                    Posted on <?= date('F d, Y h:i A', strtotime($datComment['comment_date'])) ?>
+                    <p><?= $datComment ?></p>
+                    Posted on <?= date('F d, Y h:i A', strtotime($datComment['created_date'])) ?>
                     <br />  
                     <span><?php if(isset($modified)) echo $modified; ?></span>        
                 </li>
                 <hr>
-          
             <?php endwhile ?>               
             </ul>
     <?php else: ?>

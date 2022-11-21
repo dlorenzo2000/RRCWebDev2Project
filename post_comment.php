@@ -15,34 +15,46 @@
     if(isset($_GET['postid'])){
         $postid = filter_input(INPUT_GET, 'postid'
             , FILTER_SANITIZE_NUMBER_INT);    
-            
-        $qry = "SELECT * 
-                FROM post 
-                    JOIN restaurant
-                    JOIN foodcategory  
-                    JOIN user                
-                WHERE post.postid = :postid 
-                    AND post.userid = user.userid
-                    AND post.restaurantid = restaurant.restaurantid";
-     
-        if($_SERVER['REQUEST_METHOD'] === "POST"){
-            if($_POST && empty($_POST['post-comment'])){
-                $post_comment_error = "* Comment form cannot be blank.";
-            }
+                     
+        if($_POST && empty(trim($_POST['comment']))){
+                $post_comment_error = "* Comment field cannot be blank.";
         }
-    } 
-  
+        else{
+            $comment = trim(filter_input(INPUT_POST, 'comment'
+                , FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+
+            // if the user is logged in grab their userid
+            if($usr_dat = CheckLogin($db)){
+                $userid = $usr_dat['userid'];
+            }        
+            else
+                $userid = 0;
+            
+            $qryComment = "INSERT INTO comment (comment, userid, postid)
+                VALUES (:comment, :userid, :postid)";
+
+            $stmComment = $db->prepare($qryComment);
+            $stmComment->bindValue(':comment', $comment);
+            $stmComment->bindValue(':userid', $userid);
+            $stmComment->bindValue(':userid', $postid);
+            $stmComment->execute();
+
+            header('Location: review_read.php?postid=');
+            exit;         
+        }
+    }  
 ?> 
 
 <div class="row justify-content-center">
-    <h1>Post comment</h1>
+    <h1>Post comment</h1>  
     <form action="post_comment.php">
+        <input type="hidden" name="postid" value="<?=$dat['restaurantid']?>"> 
         <label for="post-comment"></label>
-        <textarea name="post-comment" rows="10" cols="94"></textarea>
+        <textarea name="comment" rows="10" cols="94"></textarea>
         <span><?php if(isset($post_comment_error)) echo $post_comment_error; ?></span> 
         <br>
         <button type="submit" class="btn btn-secondary" id="submit">Submit</button>
         <button type="button" class="btn btn-secondary" 
-            onclick="window.location.replace('my_reviews.php')">Cancel</button>
+            onclick="window.location.replace('review_read.php')">Cancel</button>
     </form> 
 <?php require_once('footer.php') ?>

@@ -43,6 +43,8 @@
     
     $stmPost->execute(); 
 ?>
+
+<h1>My reviews</h1>
   
 <div class="row">
     <div class="col">

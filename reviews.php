@@ -55,6 +55,8 @@
     $stmRestaurant->execute();
 ?>
   
+
+<h1>All reviews of all time</h1>
 <div class="row">
     <div class="col">
         <button onclick="location.href='post_review.php';" 
