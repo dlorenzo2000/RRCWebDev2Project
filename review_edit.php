@@ -125,7 +125,7 @@
 
 <div class="row justify-content-center">
     <h1>EDIT review</h1>
-    <form method="post" action="my_review_edit.php">
+    <form method="post" action="review_edit.php">
         <input type="hidden" name="postid" value="<?=$dat['postid']?>">
         <label for="post_title">Title</label>        
         <input type="text" name="post_title" value="<?=$dat['post_title']?>">

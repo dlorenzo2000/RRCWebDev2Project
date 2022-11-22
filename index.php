@@ -18,13 +18,6 @@
         <a href="restaurant.php">Restaurants</a>
     </div>    
         <a href="reviews.php">Reviews</a>
-    </div>
-    <div class="col-md-4">
-        <?php if(($usr_dat = CheckLogin($db))):?>
-            <div class="col-md-4">
-                <a href="my_comments.php">My Comments</a>
-            </div>
-        <?php endif ?>
-    </div>
+    </div>    
 </div>  
 <?php require_once('footer.php'); ?>

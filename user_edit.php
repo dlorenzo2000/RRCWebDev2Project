@@ -74,10 +74,14 @@
     
         if($_POST && empty(trim($_POST['pwd'])))
             $password_error = "* Password cannot be blank.";
+
+        if($_POST && trim($_POST['pwd'] != trim($_POST['pwd2'])))
+            $password2_error = "* The passwords don't match.";
+
         
         if($_POST && !empty(trim($_POST['first-name'])) && !empty(trim($_POST['last-name']))
             && !empty(trim($_POST['email'])) && !empty(trim($_POST['username'])) 
-            && !empty(trim($_POST['pwd']))){
+            && trim($_POST['pwd'] == trim($_POST['pwd2']))){
 
             $userid = filter_input(INPUT_POST, 'userid'
                 , FILTER_SANITIZE_NUMBER_INT);        
@@ -89,8 +93,8 @@
                 , FILTER_SANITIZE_FULL_SPECIAL_CHARS));
             $username = trim(filter_input(INPUT_POST, 'username'
                 , FILTER_SANITIZE_FULL_SPECIAL_CHARS));
-            $pwd = trim(filter_input(INPUT_POST, 'pwd'
-                , FILTER_SANITIZE_FULL_SPECIAL_CHARS)); 
+            $pwd = (trim(filter_input(INPUT_POST, 'pwd'
+                , FILTER_SANITIZE_FULL_SPECIAL_CHARS))); 
 
             $qry = "UPDATE user 
                     SET first_name=:first_name 
@@ -101,11 +105,13 @@
         
             $stm = $db->prepare($qry);
 
+            $encrypted = password_hash($pwd, PASSWORD_DEFAULT);
+
             $stm->bindvalue(':first_name', $first_name, PDO::PARAM_STR);
             $stm->bindvalue(':last_name', $last_name, PDO::PARAM_STR);
             $stm->bindvalue(':email', $email, PDO::PARAM_STR);
             $stm->bindvalue(':username', $username, PDO::PARAM_STR);
-            $stm->bindvalue(':pwd', $pwd, PDO::PARAM_STR);
+            $stm->bindvalue(':pwd', $encrypted, PDO::PARAM_STR);
             $stm->bindvalue(':userid', $userid, PDO::PARAM_INT);
             
             $stm->execute();
@@ -155,6 +161,14 @@
                 echo $datUser['pwd']; ?>">   
         <span><?php if(isset($password_error)) 
             echo $password_error; ?></span>      
+        <br />
+        <br />
+        <label for="pwd2">Re-enter Password</label>
+        <input type="password" name="pwd2"
+            value="<?php if(trim(isset($datUser['pwd']))) 
+                echo $datUser['pwd']; ?>">   
+        <span><?php if(isset($password2_error)) 
+            echo $password2_error; ?></span>      
         <br />
         <br />           
         <button type="submit" class="btn btn-secondary" id="submit">Save</button> 

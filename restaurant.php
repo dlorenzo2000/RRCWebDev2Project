@@ -140,9 +140,9 @@
 <br />
 <?php if($stmRestaurants->rowCount() > 0): ?> 
     <?php while($datRestaurants = $stmRestaurants->fetch()): ?>
-        <?= $datRestaurants['restaurant_name'] ?>          
+        <a href="view_restaurant.php?restaurantid=<?= $datRestaurants['restaurantid']?>"><?= $datRestaurants['restaurant_name'] ?></a>          
         <?php if(isset($usr_dat)): ?>
-            <a href="restaurant_edit.php?restaurantid=<?= $datRestaurants['restaurantid']?>">edit</a> 
+            <a href="restaurant_edit.php?restaurantid=<?= $datRestaurants['restaurantid']?>">[edit]</a> 
             <?php if($usr_dat['admin'] == 1 ) echo " - active " . $datRestaurants['active']; ?>                  
         <?php endif ?>
         <br />

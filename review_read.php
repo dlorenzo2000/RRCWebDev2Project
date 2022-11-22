@@ -22,7 +22,13 @@
             else{
                 $userid = 0;
             }
-                                
+
+            // $captcha = ($_POST['g-recatpcha-response']);
+            // $secretKey = "6LccEikjAAAAAG0oRRlGSke_WBpCQaDQl2xoc7Je";
+            // $url = 'https://www.google.com/recaptcha/api/siteverify?secretkey='.$secretKey.'&response='.urldecode($captcha);     
+            // $response = file_get_contents($url);
+            // $responseKey = json_decode($response, TRUE);
+                        
             $comment = trim(filter_input(INPUT_POST, 'comment'
                 , FILTER_SANITIZE_FULL_SPECIAL_CHARS));
             $postid = filter_input(INPUT_POST, 'postid'
@@ -95,24 +101,29 @@
     <br />
     <br />
     <br /> 
-    
-    <form action="review_read.php?postid=<?= $dat['postid']?>" method="post">
-        <input type="hidden" name="postid" value="<?=$dat['postid']?>"> 
-        <label for="comment">
-            Comment
-        </label>
-        <input type="text" size="125" name="comment">
-        <span>
-            <?php if(isset($comment_error)) echo $comment_error; ?>
-        </span> 
-        <br />
-        <br />
-        <button type="submit" class="btn btn-secondary" id="submit">Add</button>        
-        <button type="reset" class="btn btn-secondary">Clear</button>
-        <br />
-        <br />
-        <br />  
-    </form> 
+
+    <?php if($usr_dat = CheckLogin($db)): ?>    
+        <form action="review_read.php?postid=<?= $dat['postid']?>" method="post">
+            <input type="hidden" name="postid" value="<?=$dat['postid']?>"> 
+            <label for="comment">
+                Comment
+            </label>
+            <input type="text" size="125" name="comment" value="<?php echo $comment;?>">
+            <span>
+                <?php if(isset($comment_error)) echo $comment_error; ?>
+            </span> 
+            <br />
+            <br />
+            <!-- <div class="g-recaptcha" data-sitekey="6LccEikjAAAAAI_n_kYgqkvjs4LpJ6VX_5cF2OmP"></div> -->
+            Type in the Captcha: <input type="text" name="captcha"><img src = "captcha.php">
+            <br />
+            <button type="submit" class="btn btn-secondary" id="submit">Add</button>        
+            <button type="reset" class="btn btn-secondary" value="Clear">Clear</button>
+            <br />
+            <br />
+            <br />  
+        </form> 
+    <?php endif ?>
 <div class="row justify-content-center">
      <br />
     <br />
@@ -136,8 +147,11 @@
                     <br />
                     on <?= date('F d, Y h:i A', strtotime($datComment['comment_date'])) ?>
                     <br />  
-                    <span><?php if(isset($modified)) echo $modified; ?></span>                          
-                </li>
+                    <span><?php if(isset($modified)) echo $modified; ?></span>   
+                    <?php if(isset($usr_dat['admin']) && ($usr_dat['admin'] == 1)) : ?>
+                        <a href="comments_edit.php?commentid=<?=$datComment['commentid']?>">EDIT COMMENT </a> 
+                    <?php endif ?>                    
+                    </li>
                 <hr>          
             <?php endwhile ?>               
             </ul>

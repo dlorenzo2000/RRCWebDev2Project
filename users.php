@@ -28,8 +28,7 @@
             <li class="tbl-li">[<?= $dat['first_name'] ?></li>         
             <li class="tbl-li"><?= $dat['last_name'] ?>]</li>         
             <li class="tbl-li">[<?= $dat['email'] ?>]</li>   
-            <li class="tbl-li">[Username: <?= strtoupper($dat['username']) ?>]</li>         
-            <li class="tbl-li">[pwd: <?= $dat['pwd'] ?>]</li>
+            <li class="tbl-li">[Username: <?= strtoupper($dat['username']) ?>]</li>  
             <li class="tbl-li">[Active: <?= $dat['active'] ?>]</li>
             <li class="tbl-li">
                 <a href="user_edit.php?userid=<?= $dat['userid']?>">EDIT</a></li>

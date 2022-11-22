@@ -44,7 +44,7 @@
         $pwd2 = filter_input(INPUT_POST, 'pwd2', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         if($pwd1 === $pwd2){
-            $pwd = password_hash($pwd1, PASSWORD_DEFAULT); 
+            $pwd = $pwd1; 
             
             $qry = "INSERT INTO User (first_name, last_name, email, username, pwd) 
                 VALUES (:first_name, :last_name, :email, :username, :pwd)";

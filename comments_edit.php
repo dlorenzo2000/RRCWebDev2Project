@@ -50,7 +50,7 @@
                 $stmCategory->bindValue(':commentid', $commentid, PDO::PARAM_INT); 
                 $stmCategory->execute();     
                 
-                header('Location: my_comments.php');
+                header('Location: comments.php');
                 exit;
             }  
             
@@ -64,7 +64,7 @@
                 $stm=$db->prepare($qry);        
                 $stm->execute();  
  
-                header("Location: my_comments.php");
+                header("Location: comments.php");
                 exit;
             }
 
@@ -78,7 +78,7 @@
                 $stm=$db->prepare($qry);        
                 $stm->execute();  
 
-                header("Location: my_comments.php");
+                header("Location: comments.php");
                 exit;
             }
         }
@@ -86,12 +86,12 @@
 ?>
 
 <h1>Edit comment</h1>
-<form action="my_comments_edit.php" method="post">
+<form action="comments_edit.php" method="post">
     <input type="hidden" name="commentid" value="<?=$dat['commentid']?>">
     <label for="comment">
         Category name
     </label>
-    <input type="text" name="comment" 
+    <input type="text" rows="30" cols="80" name="comment" 
         value="<?php if(isset($dat['comment'])) echo $dat['comment'];?>"> 
     <span>
         <?php if(isset($comment_error)) echo $comment_error; ?>
@@ -100,7 +100,7 @@
     <br />
     <button type="submit" class="btn btn-secondary" name="save" value="save">Save</button>        
     <button type="button" class="btn btn-secondary" 
-        onclick="window.location.replace('my_comments.php')">Cancel</button>
+        onclick="window.location.replace('comments.php')">Cancel</button>
     <?php if($dat['active'] == 1): ?> 
         <button type="submit" class="btn btn-secondary" value="delete" name="delete"
             onclick="return confirm('Are you sure?')">De-activate</button>

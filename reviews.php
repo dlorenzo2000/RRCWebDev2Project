@@ -29,93 +29,120 @@
     $sortCriteria = "";
 
     if($_POST){
-        if($_POST['sort-reviews'] == "newest-reviews")
-            $sortCriteria = "ORDER BY post.modified_date DESC";
-        elseif($_POST['sort-reviews'] == "restaurant-name")
-            $sortCriteria = "ORDER BY restaurant.restaurant_name";
-        else{
-            $sortCriteria = "ORDER BY foodcategory.category_name";
-        }   
+        if(isset($_POST['sort-reviews'])){
+            if($_POST['sort-reviews'] == "newest-reviews")
+                $sortCriteria = "ORDER BY post.modified_date DESC";
+            elseif($_POST['sort-reviews'] == "restaurant-name")
+                $sortCriteria = "ORDER BY restaurant.restaurant_name";
+            else
+                $sortCriteria = "ORDER BY foodcategory.category_name";  
+        }
 
+        if(isset($_POST['category']) && ($_POST['category'] > 0)){
+            $categoryid = $_POST['category'];
+            $sortCriteria = "AND post.categoryid = $categoryid";
+        } 
+         
+        if(isset($_POST['restaurant']) && ($_POST['restaurant'] > 0)){    
+            $restaurantid =  $_POST['restaurant'];         
+            $sortCriteria = "AND restaurant.restaurantid = $restaurantid";
+        }         
     } 
 
     $qryRestaurant = "SELECT * 
-                    FROM post 
-                        INNER JOIN restaurant
-                        JOIN user
-                        JOIN foodcategory
-                    WHERE post.restaurantid = restaurant.restaurantid   
-                        AND post.categoryid = foodcategory.categoryid
-                        AND post.userid = user.userid
-                        $and_active
-                        $sortCriteria";
+    FROM post 
+        INNER JOIN restaurant
+        JOIN user
+        JOIN foodcategory
+    WHERE post.restaurantid = restaurant.restaurantid   
+        AND post.categoryid = foodcategory.categoryid
+        AND post.userid = user.userid
+        $and_active
+        $sortCriteria";
 
     $stmRestaurant = $db->prepare($qryRestaurant);
 
     $stmRestaurant->execute();
+
+    $qryCategory = "SELECT * FROM foodcategory";
+    $stmCategory = $db->prepare($qryCategory);
+    $stmCategory->execute();
+
+    $qryRestaurantOnly = "SELECT * FROM restaurant";
+    $stmRestaurantOnly = $db->prepare($qryRestaurantOnly);
+    $stmRestaurantOnly->execute();
 ?>
   
-
-<h1>All reviews of all time</h1>
+<h1>Reviews</h1>
 <div class="row">
     <div class="col">
         <button onclick="location.href='post_review.php';" 
             class="btn btn-secondary">Write a review</button>
     </div>
 </div>     
-<div class="row col-md-6">      
-    <?php if($stmRestaurant->rowCount() > 0): ?>
-        <form action="reviews.php" method="post">            
-            <label for="sort-reviews">Sort ALL reviews by:</label>
-            <select name="sort-reviews">    
-                <option hidden disabled selected value>
-                        -- select an option -- 
-                </option>             
-                <option value="restaurant-name">Restaurant Name</option>                 
-                <option value="food-category">Food Category</option>
-                <option value="newest-reviews">Newest reviews</option> 
-            </select>
-            <button type="submit" class="btn btn-secondary" id="submit">Sort</button>
-            <br />
-
-            <!-- <label for="view-by">Show reviews by food category</label>
-            <select name ="view-by">
-                <option hidden disabled selected value>
-                        -- select an option -- 
-                </option>  
-                <option value="view-category">Food Category</option>
-                <option value="view-restaurant">Restaurant</option>
-            </select>        
-            <button type="submit" class="btn btn-secondary" >View</button> -->
-        
-       
-        </form> 
-        <ul>                
-            <?php while ($datRestaurant = $stmRestaurant->fetch()): ?>                        
+<div class="row col-md-10">       
+    <form action="reviews.php" method="post">   
+        <label for="sort-reviews">Sort reviews by:</label>
+        <select name="sort-reviews">  
+            <option hidden disabled selected value>
+                    -- All reviews -- 
+            </option>             
+            <option value="restaurant-name">Restaurant Name</option>                 
+            <option value="food-category">Food Category</option>
+            <option value="newest-reviews">Newest reviews</option> 
+        </select>  
+        <select name="restaurant">     
+            <option hidden disabled selected value>-- Restaurant only --</option> 
+            <?php if($stmRestaurantOnly->rowCount() > 0): ?>
+                <?php while($dat = $stmRestaurantOnly->fetch()): ?>
+                    <option value="<?= $dat['restaurantid'] ?>">
+                        <?= $dat['restaurant_name'] ?> 
+                    </option>
+                <?php endwhile ?>
+            <?php endif ?>     
+        </select> 
+        <select name="category"class="select-option-li">    
+            <option hidden disabled selected value>-- Category only --</option>             
+            <?php if($stmCategory->rowCount() > 0): ?>
+                <?php while($datCategory = $stmCategory->fetch()): ?>
+                    <option value="<?= $datCategory['categoryid'] ?>">
+                        <?= $datCategory['category_name'] ?> 
+                    </option>
+                <?php endwhile ?>
+            <?php endif ?>> 
+        </select> 
+        <button type="submit" class="btn btn-secondary" id="submit">Sort</button>
+    </form> 
+    <br />
+    <br />
+    <br />
+    <ul>       
+        <?php if($stmRestaurant->rowCount() > 0): ?>         
+            <?php while ($datRestaurant = $stmRestaurant->fetch()): ?>                                        
                 <li>
-                    <h5><?= $datRestaurant['restaurant_name'] ?> - <?= $datRestaurant['category_name'] ?></h5>                                                       
-                    <?php if(isset($usr_dat) && ($usr_dat['admin'] == 1)): ?>
-                        
+                    <h5>
+                        <?= $datRestaurant['restaurant_name'] ?> - 
+                        <?= $datRestaurant['category_name'] ?>
+                    </h5>                                                       
+                    <?php if(isset($usr_dat) && ($usr_dat['admin'] == 1)): ?> 
                         <?php if($datRestaurant['active'] == 0): ?>
-                            [Inactive post]                      
-                        <?php endif ?> 
-
+                            Inactive post                      
+                        <?php endif ?>  
                         <?php if($datRestaurant['active'] == 1): ?>
-                            [Active post]                      
-                        <?php endif ?>
-                                                   
-                        <a href="my_review_edit.php?postid=<?= $datRestaurant['postid']?>">EDIT</a>  
+                            Active post                      
+                        <?php endif ?>        
+                        <a href="review_edit.php?postid=<?= $datRestaurant['postid']?>">[edit]</a>  
                     <?php endif ?>
-                    <h6>Title - <a href="review_read.php?postid=<?= $datRestaurant['postid']?>">
-                        <?= $datRestaurant['post_title'] ?></a></h6>                                                       
-                    <?php if(strlen($datRestaurant['post_content']) > 100): ?>
-
-                    <?php endif ?>
+                    <h6>Title - 
+                        <a href="review_read.php?postid=<?= $datRestaurant['postid']?>">
+                            <?= $datRestaurant['post_title'] ?>
+                        </a>
+                    </h6> 
                     <p><?= $datRestaurant['post_content'] ?></p>        
                     <h6>
                         <?= $datRestaurant['restaurant_rating'] ?>/10 
                         rating posted by <?= $datRestaurant['first_name'] ?> on                                  
-                        <?php $display_date = (($datRestaurant['created_date']) === ($datRestaurant['modified_date'])) ?
+                        <?php $display_date = (strtotime($datRestaurant['created_date']) == strtotime($datRestaurant['modified_date'])) ?
                             date('F d, Y h:i A', strtotime($datRestaurant['created_date'])) : 
                             date('F d, Y h:i A', strtotime($datRestaurant['modified_date'])); ?>    
                         <?php if(isset($display_date)) echo $display_date; ?>                         
@@ -124,7 +151,9 @@
                 </li> 
                 <hr>
             <?php endwhile ?>
-        </ul>
-    <?php endif ?>
+        <?php else: ?>
+            No reviews exist yet for that restaurant. 
+        <?php endif ?>
+    </ul> 
 </div>
 <?php require_once('footer.php'); ?> 

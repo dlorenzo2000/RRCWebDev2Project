@@ -16,7 +16,7 @@
         LoginRedirect();
     }
     
-    $userid =  $_SESSION['userid']; 
+    $userid = $_SESSION['userid']; 
 
     $sortCriteria = "";
 
@@ -73,7 +73,7 @@
                         $modified = "Updated on " . date('F d, Y h:i A', strtotime($datPost['modified_date']));
                     ?>
                     <h5><?= $datPost['restaurant_name'] ?> - <?= $datPost['category_name']?></h5>  
-                    <a href="my_review_edit.php?postid=<?= $datPost['postid']?>">EDIT</a>                          
+                    <a href="review_edit.php?postid=<?= $datPost['postid']?>">EDIT</a>                          
                     <h6><?= $datPost['post_title'] ?> - RATING <?= $datPost['restaurant_rating'] ?>/10</h6>                    
                         Posted on <?= date('F d, Y h:i A', strtotime($datPost['created_date'])) ?>
                         <br />  

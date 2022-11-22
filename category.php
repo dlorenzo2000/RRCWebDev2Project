@@ -65,8 +65,10 @@
 <br />
 <?php if($stmCategories->rowCount() > 0): ?> 
     <?php while($datCategories = $stmCategories->fetch()): ?>        
-        <?= $datCategories['category_name'] ?>
-        <a href="category_edit.php?categoryid=<?= $datCategories['categoryid']?>">edit</a> 
+        <a href="view_category.php?categoryid=<?=$datCategories['categoryid'] ?>">
+            <?= $datCategories['category_name'] ?>
+        </a>
+        <a href="category_edit.php?categoryid=<?= $datCategories['categoryid']?>">[edit]</a> 
         <?php if($usr_dat['admin'] == 1) echo "- active " . $datCategories['active']; ?>             
         <br />
     <?php endwhile ?> 

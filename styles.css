@@ -20,7 +20,8 @@ ul{
 .bottom-nav-li,
 .top-nav-search,
 .nav-li,
-.tbl-li{
+.tbl-li,
+.select-option-li{
     display: inline-block;
 } 
 

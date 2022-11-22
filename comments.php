@@ -16,12 +16,23 @@
     }
     else{
         $userid = $usr_dat['userid'];
-        $qryComments = "SELECT * 
-            FROM comment 
-            JOIN post ON comment.postid = post.postid 
-            LEFT JOIN restaurant ON post.restaurantid = restaurant.restaurantid
-            LEFT JOIN user ON comment.userid = user.userid
-            WHERE comment.userid = $userid";
+
+        if($usr_dat['admin'] == 1){
+            $qryComments = "SELECT * 
+                            FROM comment 
+                            JOIN post ON comment.postid = post.postid 
+                            LEFT JOIN restaurant ON post.restaurantid = restaurant.restaurantid
+                            JOIN user on user.userid = comment.userid";         
+        }
+        else{
+            $qryComments = "SELECT * 
+                            FROM comment 
+                            JOIN post ON comment.postid = post.postid 
+                            LEFT JOIN restaurant ON post.restaurantid = restaurant.restaurantid
+                            LEFT JOIN user ON comment.userid = user.userid
+                            WHERE comment.userid = $userid";
+        }
+        
         $stmComments = $db->prepare($qryComments);
         $stmComments->execute();
 
@@ -30,8 +41,11 @@
         $stmActive->execute();
     }    
 ?> 
-
-<h1>My Comments</h1>
+<?php if($usr_dat['admin'] == 1): ?>
+    <h1>Manage ALL Comments</h1>
+<?php else: ?>
+    <h1>Manage my comments</h1>
+<?php endif ?>
 <hr>
 <div class="row">
     <div class="col-md-12">
@@ -62,7 +76,10 @@
                         <?php else: ?>
                             <?=$datComments['first_name']; ?>
                         <?php endif ?> 
-                        <a href="my_comments_edit.php?commentid=<?=$datComments['commentid']?>">EDIT COMMENT </a>
+                        <?php if($usr_dat['admin'] ==1 ): ?>
+                            <a href="comments_edit.php?commentid=
+                                <?=$datComments['commentid']?>">EDIT COMMENT </a>
+                        <?php endif ?>
                         <br />
                         on <?= date('F d, Y h:i A', strtotime($datComments['comment_date'])) ?>
                         <br />  

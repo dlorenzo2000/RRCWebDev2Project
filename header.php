@@ -17,6 +17,7 @@
         $logout_link = "Logout";
         $my_reviews_link = "My Reviews";
         $dashboard = "Dashboard";        
+        $usr_dat = CheckLogin($db);
     }
 ?>
 
@@ -31,6 +32,7 @@
         integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" 
         crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css" type="text/css">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <title>Foodzagram version 3.0</title>
 </head>
 <body>   
@@ -47,15 +49,21 @@
                     <li class="top-nav-li">
                         <?php if(isset($_SESSION['username'])) 
                             echo "Hi " . strtoupper($_SESSION['username']) . "!";?>
-                    </li>          
-                    <li class="top-nav-li"><a href="index.php">Main</a></li>          
+                    </li>                             
+                    <li class="top-nav-li"><a href="index.php">Main</a></li>     
+                    <li class="top-nav-li">
+                       
+            
                     
-                    <li class="top-nav-li"><a href="my_reviews.php">
-                        <?php if(isset($logout_link)) echo $my_reviews_link; ?> </a>
-                    </li>   
-                    <li class="top-nav-li"><a href="my_comments.php">
-                        <?php if(isset($logout_link)) echo "My Comments" ?> </a>
+
+                    <li class="top-nav-li"><a href="my_reviews.php?userid=<?=$usr_dat['userid']?>">
+                        <?php if(isset($_SESSION['username']) && ($usr_dat = CheckLogin($db))) 
+                           echo "My Reviews"; ?> </a>
                     </li> 
+                    
+                    
+                    
+                    
                     <li class="top-nav-li"><a href="dashboard.php">
                         <?php if(isset($_SESSION['username']) && ($usr_dat = CheckLogin($db)) 
                             && ($usr_dat['admin'] == 1)) echo "Dashboard"; ?> </a>

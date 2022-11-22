@@ -35,7 +35,7 @@
 
         if($stm->rowCount() > 0 ){            
             $dat = $stm->fetch();
-            if(password_verify($pwd, $dat['pwd'])){ 
+            if($dat['pwd'] === $pwd){ 
                 $_SESSION['username'] = $dat['username'];
                 $_SESSION['userid'] = $dat['userid'];
                 $_SESSION['admin'] = $dat['admin'];
