@@ -117,8 +117,7 @@
             <!-- <div class="g-recaptcha" data-sitekey="6LccEikjAAAAAI_n_kYgqkvjs4LpJ6VX_5cF2OmP"></div> -->
             Type in the Captcha: <input type="text" name="captcha"><img src = "captcha.php">
             <br />
-            <button type="submit" class="btn btn-secondary" id="submit">Add</button>        
-            <button type="reset" class="btn btn-secondary" value="Clear">Clear</button>
+            <button type="submit" class="btn btn-secondary" id="submit">Add</button> 
             <br />
             <br />
             <br />  
