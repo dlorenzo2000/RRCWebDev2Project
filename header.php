@@ -10,7 +10,9 @@
  *****************************************************************************/
 
     session_start();
-    require('connect.php');    
+    require('connect.php');  
+    
+    //require_once('authenticate.php');  
     require('library.php'); 
 
     if(isset($_SESSION['username'])){

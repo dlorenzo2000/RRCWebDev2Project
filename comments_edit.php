@@ -17,6 +17,8 @@
     }
     else{
         if(isset($_GET['commentid'])){
+            $postid = filter_input(INPUT_GET, 'postid'
+            , FILTER_SANITIZE_NUMBER_INT); 
             $commentid = filter_input(INPUT_GET, 'commentid'
                 , FILTER_SANITIZE_NUMBER_INT);            
 
@@ -36,6 +38,10 @@
         } 
         else{      
             if($_POST && $_POST['save'] && !empty(trim($_POST['comment']))){
+
+                $postid = filter_input(INPUT_POST
+                    , 'postid', FILTER_SANITIZE_NUMBER_INT); 
+                 
                 $commentid = (int)filter_input(INPUT_POST, 'commentid'
                     , FILTER_SANITIZE_NUMBER_INT);  
                 $comment = trim(filter_input(INPUT_POST, 'comment'
@@ -50,35 +56,45 @@
                 $stmCategory->bindValue(':commentid', $commentid, PDO::PARAM_INT); 
                 $stmCategory->execute();     
                 
-                header('Location: comments.php');
+                //header('Location: review_read.php?postid='.$postid);
+                header('Location: review_read.php?postid='. $postid);
+                //header('Location: comments.php');
                 exit;
             }  
             
             if($_POST && $_POST['delete']){ 
+                $postid = filter_input(INPUT_POST
+                , 'postid', FILTER_SANITIZE_NUMBER_INT); 
                 $commentid = filter_input(INPUT_POST, 'commentid'
-                    , FILTER_SANITIZE_NUMBER_INT);
-                $qry="UPDATE comment
-                    SET active = 0
-                    WHERE commentid = $commentid";
-                        
+                    , FILTER_SANITIZE_NUMBER_INT); 
+                $qry="  UPDATE comment
+                        SET active = 0
+                        WHERE commentid = $commentid";
+ 
                 $stm=$db->prepare($qry);        
                 $stm->execute();  
  
-                header("Location: comments.php");
+                header('Location: review_read.php?postid='. $postid);
+                //header('Location: comments.php');
                 exit;
             }
 
             if($_POST && $_POST['reactivate']){ 
+                $postid = filter_input(INPUT_POST
+                , 'postid', FILTER_SANITIZE_NUMBER_INT); 
                 $commentid = filter_input(INPUT_POST, 'commentid'
                     , FILTER_SANITIZE_NUMBER_INT);
-                $qry="UPDATE comment
-                    SET active = 1
-                    WHERE commentid = $commentid";
+                $qry="  UPDATE comment
+                        SET active = 1
+                        WHERE commentid = $commentid";
                         
                 $stm=$db->prepare($qry);        
                 $stm->execute();  
 
-                header("Location: comments.php");
+                $dat = $stm->fetch();
+
+                header('Location: review_read.php?postid='. $postid);
+                //header('Location: comments.php');
                 exit;
             }
         }
@@ -86,12 +102,16 @@
 ?>
 
 <h1>Edit comment</h1>
+*** postid <?= $_GET['postid']?> commentid <?= $_GET['commentid'] ?>
+
+
 <form action="comments_edit.php" method="post">
     <input type="hidden" name="commentid" value="<?=$dat['commentid']?>">
+    <input type="hidden" name="postid" value="<?=$_GET['postid']?>">
     <label for="comment">
-        Category name
+        Original comment
     </label>
-    <input type="text" rows="30" cols="80" name="comment" 
+    <input type="text" size="100" rows="30" cols="80" name="comment" 
         value="<?php if(isset($dat['comment'])) echo $dat['comment'];?>"> 
     <span>
         <?php if(isset($comment_error)) echo $comment_error; ?>

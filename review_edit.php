@@ -29,10 +29,10 @@
         } 
         
         // query the restaurant table
-        $qryRestaurant = "SELECT * FROM Restaurant";
+        $qryRestaurant = "SELECT * FROM Restaurant ORDER BY restaurant_name ASC";
 
         // query the foodcategory table
-        $qryCategory = "SELECT * FROM foodcategory";
+        $qryCategory = "SELECT * FROM foodcategory ORDER BY category_name ASC";
 
         $stmUser = $db->prepare($qryUser);
         $stmRestaurant = $db->prepare($qryRestaurant);
@@ -45,7 +45,8 @@
         // get the postid from the selected review to output to the page on load
         if(isset($_GET['postid'])){
             $postid = filter_input(INPUT_GET, 'postid'
-                , FILTER_SANITIZE_NUMBER_INT);            
+                , FILTER_SANITIZE_NUMBER_INT);    
+                     
 
             $qry = "SELECT * 
                     FROM post 
@@ -75,6 +76,20 @@
                 , FILTER_SANITIZE_NUMBER_INT);
             $qry="UPDATE post 
                   SET active = 0 
+                  WHERE postid = $postid";
+                    
+            $stm=$db->prepare($qry);        
+            $stm->execute();
+
+            header("Location: my_reviews.php");
+            exit;
+        }
+
+        if($_POST && ($_POST['activate'])){ 
+            $postid = filter_input(INPUT_POST, 'postid'
+                , FILTER_SANITIZE_NUMBER_INT);
+            $qry="UPDATE post 
+                  SET active = 1 
                   WHERE postid = $postid";
                     
             $stm=$db->prepare($qry);        
@@ -186,8 +201,14 @@
         <button type="submit" class="btn btn-secondary" id="submit">Save</button>  
         <button class="btn btn-secondary"   
             onclick="window.location.replace('my_reviews.php')">Cancel</button>
-        <button type="submit" class="btn btn-secondary" value="delete" name="delete"
-            onclick="return confirm('Are you sure?')">Delete</button>
+
+        <?php if($dat['active']): ?>
+            <button type="submit" class="btn btn-secondary" value="delete" name="delete"        
+                onclick="return confirm('Are you sure?')">De-activate</button>
+        <?php else: ?>
+            <button type="submit" class="btn btn-secondary" value="delete" name="activate"        
+                onclick="return confirm('Are you sure?')">Re-activate</button>
+        <?php endif ?>
         <br />
         <br />  
     </form>  

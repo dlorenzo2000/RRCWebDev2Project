@@ -68,7 +68,8 @@
     $stmCategory = $db->prepare($qryCategory);
     $stmCategory->execute();
 
-    $qryRestaurantOnly = "SELECT * FROM restaurant";
+    $qryRestaurantOnly = "SELECT * FROM restaurant 
+        ORDER BY restaurant_name ASC";
     $stmRestaurantOnly = $db->prepare($qryRestaurantOnly);
     $stmRestaurantOnly->execute();
 ?>
