@@ -19,6 +19,5 @@
         $col = imagecolorallocate($onScreenImage, 0, 0, 0);
         imagestring($onScreenImage, 29, 10, 2, $str_random, $col);     
         header('content: image/jpeg');   
-        imagejpeg($onScreenImage);
-      
+        imagejpeg($onScreenImage);      
 ?>

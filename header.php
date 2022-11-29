@@ -53,19 +53,11 @@
                             echo "Hi " . strtoupper($_SESSION['username']) . "!";?>
                     </li>                             
                     <li class="top-nav-li"><a href="index.php">Main</a></li>     
-                    <li class="top-nav-li">
-                       
-            
-                    
-
+                    <li class="top-nav-li">                        
                     <li class="top-nav-li"><a href="my_reviews.php?userid=<?=$usr_dat['userid']?>">
                         <?php if(isset($_SESSION['username']) && ($usr_dat = CheckLogin($db))) 
                            echo "My Reviews"; ?> </a>
                     </li> 
-                    
-                    
-                    
-                    
                     <li class="top-nav-li"><a href="dashboard.php">
                         <?php if(isset($_SESSION['username']) && ($usr_dat = CheckLogin($db)) 
                             && ($usr_dat['admin'] == 1)) echo "Dashboard"; ?> </a>

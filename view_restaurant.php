@@ -5,7 +5,7 @@
  * Course: Web Development - 2008 (228566)
  * Assignment: Final Project
  * Created: Nov 18, 2022
- * Updated: Nov 21, 2022 
+ * Updated: Nov 28, 2022 
  * Purpose: Page to view individual restaurant reviews
  ******************************************************************************/
     
@@ -15,65 +15,51 @@
         $restaurantid = filter_input(INPUT_GET, 'restaurantid'
                 , FILTER_SANITIZE_NUMBER_INT);
 
-        $qry = "SELECT * 
-                FROM restaurant
-                    JOIN foodcategory 
-                    JOIN city
-                    JOIN province
-                WHERE restaurant.restaurantid = $restaurantid 
-                    AND restaurant.categoryid = foodcategory.categoryid 
-                    AND restaurant.cityid = city.cityid
-                    AND restaurant.provinceid = province.provinceid 
-                    AND restaurant.active = 1 
-                    LIMIT 1";
-
-        $stm = $db->prepare($qry);
-        $stm->execute();
-        
-        $dat = $stm->fetch();
-
-        $qryActive = "SELECT * FROM restaurant
+$qryActive = "SELECT * FROM restaurant
             WHERE restaurantid = $restaurantid AND active = 1 LIMIT 1";
         $stmActive = $db->prepare($qryActive);
         $stmActive->execute();
-        $datActive = $stmActive->fetch();
+        $datActive = $stmActive->fetch(); 
 
-        $qryReviews = " SELECT *  
-                        FROM post  
-                        JOIN restaurant 
-                        LEFT JOIN `user` ON post.userid = user.userid
-                        LEFT JOIN foodcategory ON foodcategory.categoryid = post.categoryid 
-                        WHERE post.restaurantid = restaurant.restaurantid
-                        AND post.restaurantid = $restaurantid";
-
+        $qryReviews = "SELECT * 
+                        FROM post 
+                            left join restaurant on post.restaurantid = restaurant.restaurantid 
+                            left join foodcategory on foodcategory.categoryid = post.categoryid
+                            left join city on city.cityid = restaurant.cityid
+                            left join province on province.provinceid = restaurant.provinceid
+                            left join user on post.userid = user.userid
+                        where post.restaurantid = $restaurantid";
+        
         $stmReviews = $db->prepare($qryReviews);
+        $stmRestaurant = $db->prepare($qryReviews);
+
+        $stmRestaurant->execute();
         $stmReviews->execute();
     }
-?>
+?> 
 
 <h1>Restaurant Details</h1>
-<br />
-<h2><?= $dat['restaurant_name']?></h2> 
-<h4><?= $dat['restaurant_address']?></h4>
-<h4><?= $dat['city_name']?>,
-<?= $dat['province_name']?></h4> 
-(Food category: <a href="view_category.php?categoryid=<?=$dat['categoryid']?>?category_name=<?=$dat['category_name']?>">
-    <?=$dat['category_name']?></a>)
-<br />
-<br />
-<div class="col">
-    <button onclick="location.href='post_review.php';" 
-        class="btn btn-secondary">Write a review</button>
-</div>
-<h5>Restaurant reviews</h5>
+<br />   
 <ul>
     <?php if($stmReviews->rowCount() > 0): ?>
+        <?php $datRestaurant = $stmRestaurant->fetch() ?> 
+        <h2 class="heading_inline"><?= $datRestaurant['restaurant_name'] ?></h2>
+        [<?= $datRestaurant['category_name'] ?> food]
+        <br />  
+        <?= $datRestaurant['restaurant_address'] ?>
+        <br />
+        <?= $datRestaurant['city_name'] ?>, <?= $datRestaurant['province_name'] ?> 
+        <br />
+        <br />
+        <div class="col">
+            <button onclick="location.href='post_review.php';" 
+                class="btn btn-secondary">Write a review</button>
+        </div>  
+        <br />
+        <h5>Restaurant reviews</h5> 
+        <hr>
         <?php while ($datReviews = $stmReviews->fetch()): ?>                        
-            <li>
-                <h5>
-                    <?= $datReviews['restaurant_name'] ?> - 
-                    <?= $datReviews['category_name'] ?>
-                </h5>                                                       
+            <li>                                           
                 <?php if(isset($usr_dat) && ($usr_dat['admin'] == 1)): ?> 
                     <?php if($datReviews['active'] == 0): ?>  
                         Inactive post                    

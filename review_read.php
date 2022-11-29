@@ -23,6 +23,20 @@
                 $userid = 0;
             }
                         
+            // if(isset($_POST['verify'])){
+            //     $sessionCaptcha = $_SESSION['captcha'];
+            //     $formCaptcha = $_POST['captcha'];
+
+            //     if($sessionCaptcha == $formCaptcha){
+            //         $thsadfasdfadsfis->execute();
+                    
+            //     }
+            //     else
+            //         $captcha_error = "Could not verify you are human.";
+            // }
+            
+
+
             $comment = trim(filter_input(INPUT_POST, 'comment'
                 , FILTER_SANITIZE_FULL_SPECIAL_CHARS));
             $postid = filter_input(INPUT_POST, 'postid'
@@ -68,7 +82,7 @@
 
         $dat = $stm->fetch();
 
-        if($usr_dat['admin'] == 1)
+        if(isset($usr_dat) && $usr_dat['admin'] == 1)
             $activeStatus = "";
         else
             $activeStatus = "AND comment.active = 1"; 
@@ -98,10 +112,9 @@
 <div class="row justify-content-center">
 <h1>Reading review</h1>
 <br />
-<br />        
-<br />        
-<br />               
-<h5><?= $dat['restaurant_name'] ?> - <?= $datEditCategory['category_name'] ?></h5>
+<br />           
+<br />           
+<h5 class="heading_inline"><?= $dat['restaurant_name'] ?>- [<?= $datEditCategory['category_name'] ?> food]</h5>
 <h5>Title - <?=$dat['post_title']?></h5>
 <?=$dat['post_content']?> 
 <br /> 
@@ -120,21 +133,23 @@
         <label for="comment">
             Comment
         </label>
-        <input type="text" size="125" name="comment" value="
-        <?php if(isset($comment)): ?><?php echo $comment;?><?php endif ?>">
+        <input type="text" size="125" name="comment" 
+            value="<?php if(isset($comment)): ?><?php echo $comment;?><?php endif ?>">
         <span>
             <?php if(isset($comment_error)) echo $comment_error; ?>
         </span> 
         <br />
         <br />
-        Prove you are human: <input type="text" name="captcha"><img src = "captcha.php">
+        Prove you are human: <input type="text" name="captcha"><img src = "captcha.php">        
+        <button type="submit" class="btn btn-secondary" name="verify" id="verify" value="verify">Verify</button> 
         <br />
-        <button type="submit" class="btn btn-secondary" id="submit">Add</button> 
+        <button type="submit" class="btn btn-secondary" id="submit">Add</button>         
         <br />
         <br />
         <br />  
     </form> 
 <?php endif ?>
+</div>
 <div class="row justify-content-center">
 <br />
 <br />

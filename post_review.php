@@ -38,7 +38,6 @@
         $stmCategory->execute();
 
         if($_POST){
-
             $post_title = trim(filter_input(INPUT_POST, 'post_title'
                 , FILTER_SANITIZE_FULL_SPECIAL_CHARS));
             $post_content = trim(filter_input(INPUT_POST, 'post_content'
@@ -82,7 +81,7 @@
 
 <h1>Write a restaurant review</h1>
 <div class="row justify-content-center">
-    <form method="post" action="post_review.php">
+    <form method="post" action="post_review.php" enctype="multipart/form-data">
         <label for="post_title">Title</label>
         <input type="text" name="post_title"> 
         <br />
@@ -134,6 +133,7 @@
         </select>
         <a href="category.php">Add category</a>
         <br />
+        <button type="submit" class="btn btn-secondary" id="images">Add Food Images</button>
         <button type="submit" class="btn btn-secondary" id="submit">Submit</button>
         <button type="button" class="btn btn-secondary" 
             onclick="window.location.replace('my_reviews.php')">Cancel</button>

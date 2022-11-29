@@ -5,7 +5,7 @@
  * Course: Web Development - 2008 (228566)
  * Assignment: Final Project
  * Created: Nov 15, 2022
- * Updated: Nov 17, 2022 
+ * Updated: Nov 24, 2022 
  * Purpose: Reviews page displays the reviews posted by a logged in user.
  *****************************************************************************/
 
@@ -75,7 +75,7 @@
                     <h5><?= $datPost['restaurant_name'] ?> - <?= $datPost['category_name']?></h5>  
                     <a href="review_edit.php?postid=<?= $datPost['postid']?>">EDIT</a>                          
                     <h6><?= $datPost['post_title'] ?> - RATING <?= $datPost['restaurant_rating'] ?>/10</h6>                    
-                        Posted on <?= date('F d, Y h:i A', strtotime($datPost['created_date'])) ?>
+                        Posted on <?= date('F d, Y h:i A', strtotime($datPost['modified_date'])) ?>
                         <br />  
                         <span><?php if(isset($modified)) echo $modified; ?></span>       
                     <p><?= $datPost['post_content'] ?></p>   

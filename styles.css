@@ -21,6 +21,7 @@ ul{
 .top-nav-search,
 .nav-li,
 .tbl-li,
+.heading_inline,
 .select-option-li{
     display: inline-block;
 } 
