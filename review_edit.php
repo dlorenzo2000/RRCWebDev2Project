@@ -201,8 +201,7 @@
         <button type="submit" class="btn btn-secondary" id="submit">Save</button>  
         <button class="btn btn-secondary"   
             onclick="window.location.replace('my_reviews.php')">Cancel</button>
-
-        <?php if($dat['active']): ?>
+        <?php if(isset($dat['active']) && $dat['active']): ?>
             <button type="submit" class="btn btn-secondary" value="delete" name="delete"        
                 onclick="return confirm('Are you sure?')">De-activate</button>
         <?php else: ?>

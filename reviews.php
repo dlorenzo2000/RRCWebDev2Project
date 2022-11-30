@@ -54,9 +54,11 @@
         INNER JOIN restaurant
         JOIN user
         JOIN foodcategory
+        JOIN images
     WHERE post.restaurantid = restaurant.restaurantid   
         AND post.categoryid = foodcategory.categoryid
         AND post.userid = user.userid
+        and images.postid = post.postid
         $and_active
         $sortCriteria";
 
@@ -124,7 +126,7 @@
                     <h5>
                         <?= $datRestaurant['restaurant_name'] ?> - 
                         <?= $datRestaurant['category_name'] ?>
-                    </h5>                                                       
+                    </h5>  
                     <?php if(isset($usr_dat) && ($usr_dat['admin'] == 1)): ?> 
                         <?php if($datRestaurant['active'] == 0): ?>
                             Inactive post                      
@@ -147,8 +149,16 @@
                             date('F d, Y h:i A', strtotime($datRestaurant['created_date'])) : 
                             date('F d, Y h:i A', strtotime($datRestaurant['modified_date'])); ?>    
                         <?php if(isset($display_date)) echo $display_date; ?>                         
-                        <a href="review_read.php?postid=<?= $datRestaurant['postid']?>">READ COMMENTS</a>                           
-                    </h6>                     
+                        <a href="review_read.php?postid=<?= $datRestaurant['postid']?> ">READ COMMENTS</a>                           
+                    </h6>     
+
+
+
+                    Photos: <img src="uploads/<?=$datRestaurant['image_name']?>" alt="<?=$datRestaurant['image_name'] ?>" />
+                    
+                    
+
+
                 </li> 
                 <hr>
             <?php endwhile ?>
