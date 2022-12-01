@@ -207,8 +207,7 @@
     <br />
     <button type="submit" class="btn btn-secondary" 
         name="save" value="save">Save</button>        
-    <button type="button" class="btn btn-secondary"   
-        onclick="window.location.replace('restaurant.php')">Cancel</button>
+        <button type="button" class="btn btn-secondary" onclick="history.back()">Cancel</button>
     <?php if($usr_dat['admin'] == 1): ?> 
         <?php if(isset($datActive)): ?>
             <?php if ($datActive['active'] == 1): ?>

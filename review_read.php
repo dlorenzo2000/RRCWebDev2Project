@@ -58,7 +58,7 @@
         $postid = filter_input(INPUT_GET, 'postid'
             , FILTER_SANITIZE_NUMBER_INT);    
             
-        $qry = "SELECT * 
+        $qry = "SELECT *
                 FROM post 
                     JOIN restaurant
                     JOIN foodcategory  
@@ -68,13 +68,13 @@
                     AND post.restaurantid = restaurant.restaurantid
                     AND post.categoryid = foodcategory.categoryid LIMIT 1";
 
-        $qryActiveComment = "   SELECT active 
-                                FROM comment 
-                                    JOIN post ON comment.postid = post.postid
-                                    JOIN user ON post.userid = user.userid
-                                WHERE comment.postid = $postid";
-        $stmActiveComment = $db->prepare($qryActiveComment);
-        $stmActiveComment->execute();        
+        // $qryActiveComment = "   SELECT active 
+        //                         FROM comment 
+        //                             JOIN post ON comment.postid = post.postid
+        //                             JOIN user ON post.userid = user.userid
+        //                         WHERE comment.postid = $postid";
+        // $stmActiveComment = $db->prepare($qryActiveComment);
+        // $stmActiveComment->execute();        
 
         $stm = $db->prepare($qry);           
         $stm->bindValue(':postid', $postid, PDO::PARAM_INT);
@@ -109,7 +109,7 @@
      }     
 ?> 
 
-<div class="row justify-content-center">
+<div class="row">
 <h1>Reading review</h1>
 <br />
 <br />           
@@ -127,27 +127,28 @@
 <br />
 <br />
 <br /> 
-<?php if($usr_dat = CheckLogin($db)): ?>    
-    <form action="review_read.php?postid=<?= $dat['postid']?>" method="post">
-        <input type="hidden" name="postid" value="<?=$dat['postid']?>"> 
-        <label for="comment">
-            Comment
-        </label>
-        <input type="text" size="125" name="comment" 
-            value="<?php if(isset($comment)): ?><?php echo $comment;?><?php endif ?>">
-        <span>
-            <?php if(isset($comment_error)) echo $comment_error; ?>
-        </span> 
-        <br />
-        <br />
-        Prove you are human: <input type="text" name="captcha"><img src = "captcha.php">        
-        <button type="submit" class="btn btn-secondary" name="verify" id="verify" value="verify">Verify</button> 
-        <br />
-        <button type="submit" class="btn btn-secondary" id="submit">Add</button>         
-        <br />
-        <br />
-        <br />  
-    </form> 
+<?php if($usr_dat = CheckLogin($db)): ?>  
+        <form action="review_read.php?postid=<?= $dat['postid']?>" method="post">
+            <input type="hidden" name="postid" value="<?=$dat['postid']?>"> 
+            <label for="comment">
+                Comment
+            </label>
+            <input type="text" size="125" name="comment" 
+                value="<?php if(isset($comment)): ?><?php echo $comment;?><?php endif ?>">
+            <span>
+                <?php if(isset($comment_error)) echo $comment_error; ?>
+            </span> 
+            <br />
+            <br />
+            Prove you are human: <input type="text" name="captcha"><img src = "captcha.php">        
+            <button type="submit" class="btn btn-secondary" 
+                name="verify" id="verify" value="verify">Verify</button> 
+            <br />
+            <button type="submit" class="btn btn-secondary" id="submit">Add</button>         
+            <br />
+            <br />
+            <br />  
+        </form>  
 <?php endif ?>
 </div>
 <div class="row justify-content-center">

@@ -99,8 +99,7 @@
     <br />
     <br />
     <button type="submit" class="btn btn-secondary" name="save" value="save">Save</button>        
-    <button type="button" class="btn btn-secondary" 
-        onclick="window.location.replace('category.php')">Cancel</button>
+    <button type="button" class="btn btn-secondary" onclick="history.back()">Cancel</button>
     <?php if($usr_dat['admin'] == 1): ?>
         <button type="submit" class="btn btn-secondary" value="delete" name="delete"
             onclick="return confirm('Are you sure?')">De-activate</button>

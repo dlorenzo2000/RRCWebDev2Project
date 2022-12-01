@@ -54,11 +54,10 @@
         INNER JOIN restaurant
         JOIN user
         JOIN foodcategory
-        JOIN images
+        LEFT JOIN images ON images.postid = post.postid
     WHERE post.restaurantid = restaurant.restaurantid   
         AND post.categoryid = foodcategory.categoryid
         AND post.userid = user.userid
-        and images.postid = post.postid
         $and_active
         $sortCriteria";
 
@@ -74,6 +73,8 @@
         ORDER BY restaurant_name ASC";
     $stmRestaurantOnly = $db->prepare($qryRestaurantOnly);
     $stmRestaurantOnly->execute();
+
+    $qryImages = "";
 ?>
   
 <h1>Reviews</h1>
@@ -145,17 +146,19 @@
                     <h6>
                         <?= $datRestaurant['restaurant_rating'] ?>/10 
                         rating posted by <?= $datRestaurant['first_name'] ?> on                                  
-                        <?php $display_date = (strtotime($datRestaurant['created_date']) == strtotime($datRestaurant['modified_date'])) ?
+                        <?php $display_date = (strtotime($datRestaurant['created_date']) 
+                            == strtotime($datRestaurant['modified_date'])) ?
                             date('F d, Y h:i A', strtotime($datRestaurant['created_date'])) : 
                             date('F d, Y h:i A', strtotime($datRestaurant['modified_date'])); ?>    
                         <?php if(isset($display_date)) echo $display_date; ?>                         
                         <a href="review_read.php?postid=<?= $datRestaurant['postid']?> ">READ COMMENTS</a>                           
-                    </h6>     
-
-
-
-                    Photos: <img src="uploads/<?=$datRestaurant['image_name']?>" alt="<?=$datRestaurant['image_name'] ?>" />
+                    </h6>   
                     
+                    
+                    <?php if(isset($datRestaurant['image_name'])): ?>
+                        Photos: <img src="uploads/<?=$datRestaurant['image_name']?>" 
+                            class="thumb" alt="<?=$datRestaurant['image_name'] ?>" />                    
+                    <?php endif ?>           
                     
 
 

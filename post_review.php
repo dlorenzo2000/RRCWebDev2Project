@@ -128,17 +128,10 @@
         } 
     }
 ?>
-image file upload detected <?= $image_upload_detected ?>
-<br />
-postid is <?= $postid['postid'] ?>
-<br />
-<?php if($_POST): ?>
-<pre><?= print_r($_FILES)?></pre>
-<?php endif ?>
 
 <h1>Write a restaurant review</h1>
 <div class="row justify-content-center">
-    <form method="post" action="post_review.php" enctype="multipart/form-data"> -->
+    <form method="post" action="post_review.php" enctype="multipart/form-data"> 
         <label for="post_title">Title</label>
         <input type="text" name="post_title"> 
         <br />
@@ -194,8 +187,7 @@ postid is <?= $postid['postid'] ?>
         <input type="file" name="image" id="image" /> 
         <br />
         <button type="submit" class="btn btn-secondary" id="submit">Submit</button>
-        <button type="button" class="btn btn-secondary" 
-            onclick="window.location.replace('my_reviews.php')">Cancel</button>
+        <button type="button" class="btn btn-secondary" onclick="history.back()">Cancel</button>
         <br />
         <br />
     </form>     

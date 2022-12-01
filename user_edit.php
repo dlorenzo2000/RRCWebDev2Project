@@ -172,8 +172,7 @@
         <br />
         <br />           
         <button type="submit" class="btn btn-secondary" id="submit">Save</button> 
-        <button type="button" class="btn btn-secondary" 
-            onclick="window.location.replace('users.php')">Cancel</button>
+        <button type="button" class="btn btn-secondary" onclick="history.back()">Cancel</button>
             <?php if($usr_dat['admin'] == 1): ?>
                 <?php if(isset($datUser) && ($datUser['active'] == 1)): ?>
                     <button type="submit" class="btn btn-secondary" value="delete" name="delete"

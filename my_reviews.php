@@ -15,33 +15,40 @@
     if(!($usr_dat = CheckLogin($db))){
         LoginRedirect();
     }
-    
-    $userid = $_SESSION['userid']; 
+    else{ 
+        if($usr_dat['admin'] == 1) 
+            $post_status = "0 OR post.active = 1";
+        else
+            $post_status = 1;
 
-    $sortCriteria = "";
+        $userid = $_SESSION['userid']; 
 
-    if($_POST){
-        if($_POST['sort-reviews'] == "newest-reviews")
-            $sortCriteria = "ORDER BY post.modified_date DESC";
-        elseif($_POST['sort-reviews'] == "restaurant-name")
-            $sortCriteria = "ORDER BY restaurant.restaurant_name";
-        else{
-            $sortCriteria = "ORDER BY foodcategory.category_name";
-        }   
-    }    
-   
-    $qryPost = "SELECT * 
-                FROM post       
-                JOIN foodcategory                
-                INNER JOIN restaurant   
-                WHERE post.restaurantid = restaurant.restaurantid 
-                    AND foodcategory.categoryid = post.categoryid
-                    AND post.active = 1 
-                    AND post.userid = $userid $sortCriteria";               
-                    
-    $stmPost = $db->prepare($qryPost);
-    
-    $stmPost->execute(); 
+        $sortCriteria = ""; 
+
+        if($_POST){
+            if($_POST['sort-reviews'] == "newest-reviews")
+                $sortCriteria = "ORDER BY post.modified_date DESC";
+            elseif($_POST['sort-reviews'] == "restaurant-name")
+                $sortCriteria = "ORDER BY restaurant.restaurant_name";
+            else{
+                $sortCriteria = "ORDER BY foodcategory.category_name";
+            }   
+        }    
+
+        $qryPost = "SELECT post.postid, foodcategory.category_name, restaurant.restaurant_name
+            , post.post_title, post.post_content, post.restaurant_rating
+            , restaurant.restaurantid, post.created_date, post.modified_date, images.image_name
+                    FROM post                      
+                    INNER JOIN foodcategory ON foodcategory.categoryid = post.categoryid              
+                    INNER JOIN restaurant ON post.restaurantid = restaurant.restaurantid 
+                    LEFT JOIN images ON images.postid = post.postid 
+                    WHERE post.active = $post_status 
+                        AND post.userid = $userid $sortCriteria";  
+                                    
+        $stmPost = $db->prepare($qryPost);
+        
+        $stmPost->execute(); 
+    }
 ?>
 
 <h1>My reviews</h1>
@@ -73,13 +80,19 @@
                         $modified = "Updated on " . date('F d, Y h:i A', strtotime($datPost['modified_date']));
                     ?>
                     <h5><?= $datPost['restaurant_name'] ?> - <?= $datPost['category_name']?></h5>  
-                    <a href="review_edit.php?postid=<?= $datPost['postid']?>">EDIT</a>                          
+                    <a href="review_edit.php?postid=<?= $datPost['postid']?>&restaurantid=<?=$datPost['restaurantid']?>">EDIT</a>                          
                     <h6><?= $datPost['post_title'] ?> - RATING <?= $datPost['restaurant_rating'] ?>/10</h6>                    
                         Posted on <?= date('F d, Y h:i A', strtotime($datPost['modified_date'])) ?>
                         <br />  
                         <span><?php if(isset($modified)) echo $modified; ?></span>       
                     <p><?= $datPost['post_content'] ?></p>   
                     <a href="review_read.php?postid=<?= $datPost['postid']?>">READ COMMENTS</a> 
+                    <br />        
+                    <?php if($datPost['image_name']):?>
+                        Photos:  
+                        <img src="uploads/<?=$datPost['image_name']?>" 
+                            class="thumb" alt="<?=$datPost['image_name'] ?>" /> 
+                    <?php endif ?>      
                 </li>
                 <hr>
             <?php endwhile ?>

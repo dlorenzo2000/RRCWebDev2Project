@@ -74,28 +74,42 @@
             $stmEditCategory = $db->prepare($qryEditCategory);
             $stmEditCategory->execute();
             $datEditCategory = $stmEditCategory->fetch();            
-        }         
+        }
+        // This function checks to see if a checkbox on the form is 
+        // selected. It takes two parameters, the name of the check_box
+        // and the value passed
+        function IsChecked($checkname, $value){  
+            if(!empty($_POST[$checkname])){
+                foreach($_POST[$checkname] as $checked){
+                    if($checked == $value){
+                        
+            $checkbaby->execute();
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
 
         if($_POST && $_POST['delete_image']){
-            $postid = filter_input(INPUT_POST, 'postid'
-            , FILTER_SANITIZE_NUMBER_INT);   
-             
+            $postid = filter_input(INPUT_GET, 'postid'
+            , FILTER_SANITIZE_NUMBER_INT);      
+
             $qry = "SELECT * FROM images WHERE images.postid = $postid LIMIT 5";
-            $stm = $db->prepare($qry);
+            $stm = $db->prepare($qryImage);
             $stm->execute();    
 
             $stm = $db->prepare($qry);            
             $stm->execute();
 
             $dat = $stm->fetch();
-           
-            $path = "uploads/".$dat['image_name'];
-            unlink($path);     
- 
-            $qryDelete="DELETE FROM images WHERE postid = $postid LIMIT 1";
-            $stmDelete=$db->prepare($qryDelete);
-            $stmDelete->execute(); 
-        }   
+          
+            if(IsChecked(('delete_image_checkbox'), $dat['image_name'])){ 
+                $yesNOyes->execute();
+                $path = "uploads/".$dat['image_name'];
+                unlink($path);
+            }     
+        } 
 
         if($_POST && ($_POST['delete'])){ 
             $postid = filter_input(INPUT_POST, 'postid'
@@ -276,7 +290,8 @@
             Photos: 
             <?php while ($datImage = $stmImage->fetch()): ?>
                 <img src="uploads/<?=$datImage['image_name']?>" 
-                class="thumb" alt="<?=$datImage['image_name'] ?>" />                      
+                class="thumb" alt="<?=$datImage['image_name'] ?>" /> 
+                <input type="checkbox" name="delete_image_checkbox" value="<?=$datImage['image_name']?>">                       
             <?php endwhile ?>              
             <button type="submit" class="btn btn-secondary" name="delete_image" value="delete_image"
                 onclick="return confirm('Confirm delete this image?')">Delete image</button> 
