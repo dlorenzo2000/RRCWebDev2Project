@@ -14,7 +14,9 @@
     $usr_dat = CheckLogin($db);
 ?>
 
-<p>            
-    Hi <?= $usr_dat['first_name'] ?>. Welcome to the home page!
-</p>
+<div class="index-body">
+    <p>            
+        Welcome back <?= $usr_dat['first_name'] ?>.
+    </p>    
+</div>
 <?php require_once('footer.php'); ?> 

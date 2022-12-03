@@ -5,7 +5,7 @@
  * Course: Web Development - 2008 (228566)
  * Assignment: Final Project
  * Created: Nov 13, 2022
- * Updated: Nov 20, 2022 
+ * Updated: Nov 30, 2022 
  * Purpose: Reviews page that contains food blogs written by registered users.
  *          This can be viewed by all visitors to this page.
  *****************************************************************************/
@@ -49,17 +49,19 @@
         }         
     } 
 
-    $qryRestaurant = "SELECT * 
-    FROM post 
-        INNER JOIN restaurant
-        JOIN user
-        JOIN foodcategory
-        LEFT JOIN images ON images.postid = post.postid
-    WHERE post.restaurantid = restaurant.restaurantid   
-        AND post.categoryid = foodcategory.categoryid
-        AND post.userid = user.userid
-        $and_active
-        $sortCriteria";
+    $qryRestaurant = "SELECT post.postid, foodcategory.category_name, restaurant.restaurant_name
+        , post.post_title, post.post_content, post.restaurant_rating, post.active, user.first_name
+        , restaurant.restaurantid, post.created_date, post.modified_date, images.image_name 
+                    FROM post 
+                        INNER JOIN restaurant
+                        JOIN user
+                        JOIN foodcategory
+                        LEFT JOIN images ON images.postid = post.postid
+                    WHERE post.restaurantid = restaurant.restaurantid   
+                        AND post.categoryid = foodcategory.categoryid
+                        AND post.userid = user.userid
+                        $and_active
+                        $sortCriteria";
 
     $stmRestaurant = $db->prepare($qryRestaurant);
 
@@ -153,15 +155,10 @@
                         <?php if(isset($display_date)) echo $display_date; ?>                         
                         <a href="review_read.php?postid=<?= $datRestaurant['postid']?> ">READ COMMENTS</a>                           
                     </h6>   
-                    
-                    
                     <?php if(isset($datRestaurant['image_name'])): ?>
                         Photos: <img src="uploads/<?=$datRestaurant['image_name']?>" 
                             class="thumb" alt="<?=$datRestaurant['image_name'] ?>" />                    
-                    <?php endif ?>           
-                    
-
-
+                    <?php endif ?>   
                 </li> 
                 <hr>
             <?php endwhile ?>

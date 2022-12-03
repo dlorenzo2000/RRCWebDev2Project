@@ -19,12 +19,12 @@
             <ul>        
                 <li class="bottom-nav-li"><a href="index.php">Home</a></li>          
                 <li class="bottom-nav-li"><a href="about.php">About</a></li>                   
-                <li class="bottom-nav-li"><a href="contact.php">Contact</a></li>   
-      
+                <li class="bottom-nav-li"><a href="contact.php">Contact</a></li>         
             </ul>
-        </nav>   
-    </div>
+        </nav>          
+    </div>        
 </div>    
+<div class="row copyright align-item-center">&#169Foodzagram 2022</div>     
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" 
     integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" 
     crossorigin="anonymous"></script>

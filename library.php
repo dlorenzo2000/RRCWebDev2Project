@@ -19,7 +19,8 @@
         if(isset($_SESSION['username'])){
             $username = $_SESSION['username'];
  
-            $qry = "SELECT * FROM User WHERE username = :username LIMIT 1";
+            $qry = "SELECT * FROM User WHERE username 
+                = :username AND active = 1 LIMIT 1";
         
             $stm = $db->prepare($qry);
     

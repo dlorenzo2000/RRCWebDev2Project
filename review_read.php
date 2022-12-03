@@ -10,6 +10,9 @@
  ******************************************************************************/
 
     require_once('header.php');   
+
+    if(isset($usr_dat))    
+        $username = $usr_dat['first_name'];
  
     if($_SERVER['REQUEST_METHOD'] === "POST"){
         if($_POST && empty(trim($_POST['comment']))){
@@ -22,7 +25,7 @@
             else{
                 $userid = 0;
             }
-                        
+ 
             // if(isset($_POST['verify'])){
             //     $sessionCaptcha = $_SESSION['captcha'];
             //     $formCaptcha = $_POST['captcha'];
@@ -34,8 +37,6 @@
             //     else
             //         $captcha_error = "Could not verify you are human.";
             // }
-            
-
 
             $comment = trim(filter_input(INPUT_POST, 'comment'
                 , FILTER_SANITIZE_FULL_SPECIAL_CHARS));
@@ -57,24 +58,31 @@
     if(isset($_GET['postid'])){
         $postid = filter_input(INPUT_GET, 'postid'
             , FILTER_SANITIZE_NUMBER_INT);    
-            
-        $qry = "SELECT *
-                FROM post 
-                    JOIN restaurant
-                    JOIN foodcategory  
-                    JOIN user                
-                WHERE post.postid = :postid 
-                    AND post.userid = user.userid
-                    AND post.restaurantid = restaurant.restaurantid
-                    AND post.categoryid = foodcategory.categoryid LIMIT 1";
+                     
+        if(isset($usr_dat)){
+            if($usr_dat['admin'] == 1){
+                // query the user table for all posts
+                $qryUser = "SELECT * FROM User";
+                $active_status = "0 OR post.active = 1";
+            }     
 
-        // $qryActiveComment = "   SELECT active 
-        //                         FROM comment 
-        //                             JOIN post ON comment.postid = post.postid
-        //                             JOIN user ON post.userid = user.userid
-        //                         WHERE comment.postid = $postid";
-        // $stmActiveComment = $db->prepare($qryActiveComment);
-        // $stmActiveComment->execute();        
+            $active_status = 1;      
+        }
+        else{
+            // query the user table for only one user
+            // $qryUser = "SELECT * FROM User WHERE username = $username LIMIT 1";    
+            $active_status = 1;
+        } 
+
+        $qry = "SELECT post.postid, foodcategory.category_name, restaurant.restaurant_name
+        , post.post_title, post.post_content, restaurant.restaurantid, post.restaurant_rating
+        , post.created_date, post.modified_date, images.image_name, post.active, user.first_name
+            FROM post                      
+            INNER JOIN foodcategory ON foodcategory.categoryid = post.categoryid              
+            INNER JOIN restaurant ON post.restaurantid = restaurant.restaurantid 
+            LEFT JOIN images ON images.postid = $postid
+            INNER JOIN user on user.userid = post.userid
+            WHERE post.active = $active_status AND post.postid = $postid LIMIT 1";       
 
         $stm = $db->prepare($qry);           
         $stm->bindValue(':postid', $postid, PDO::PARAM_INT);
@@ -110,24 +118,31 @@
 ?> 
 
 <div class="row">
-<h1>Reading review</h1>
-<br />
-<br />           
-<br />           
-<h5 class="heading_inline"><?= $dat['restaurant_name'] ?>- [<?= $datEditCategory['category_name'] ?> food]</h5>
-<h5>Title - <?=$dat['post_title']?></h5>
-<?=$dat['post_content']?> 
-<br /> 
-<br /> 
-<?= $dat['restaurant_rating']?>/10 rating posted by <?=$dat['first_name']?> on    
-<?php $display_date = (($dat['created_date']) === ($dat['modified_date'])) ?
-    date('F d, Y h:i A', strtotime($dat['created_date'])) : 
-    date('F d, Y h:i A', strtotime($dat['modified_date'])); ?>  
-<?php if(isset($display_date)) echo $display_date; ?>     
-<br />
-<br />
-<br /> 
-<?php if($usr_dat = CheckLogin($db)): ?>  
+    <h1>Reading review</h1>
+    <br />
+    <br />           
+    <br />           
+    <h5 class="heading_inline"><?= $dat['restaurant_name'] 
+        ?>- [<?= $datEditCategory['category_name'] ?> food]</h5>
+    <h5>Title - <?=$dat['post_title']?></h5>
+    <p>
+        <?=$dat['post_content']?> 
+        <br /> 
+        <br /> 
+        <?= $dat['restaurant_rating']?>/10 rating posted by <?=$dat['first_name']?> on    
+        <?php $display_date = (($dat['created_date']) === ($dat['modified_date'])) ?
+            date('F d, Y h:i A', strtotime($dat['created_date'])) : 
+            date('F d, Y h:i A', strtotime($dat['modified_date'])); ?>  
+        <?php if(isset($display_date)) echo $display_date; ?>     
+        <br />
+        <br />
+        <br /> 
+        <?php if(isset($dat['image_name'])): ?>
+            Photos: <img src="uploads/<?=$dat['image_name']?>" 
+                alt="<?=$dat['image_name'] ?>" />  
+        <?php endif ?> 
+    </p>
+    <?php if($usr_dat = CheckLogin($db)): ?>  
         <form action="review_read.php?postid=<?= $dat['postid']?>" method="post">
             <input type="hidden" name="postid" value="<?=$dat['postid']?>"> 
             <label for="comment">
@@ -136,7 +151,7 @@
             <input type="text" size="125" name="comment" 
                 value="<?php if(isset($comment)): ?><?php echo $comment;?><?php endif ?>">
             <span>
-                <?php if(isset($comment_error)) echo $comment_error; ?>
+            <?php if(isset($comment_error)) echo $comment_error; ?>
             </span> 
             <br />
             <br />
@@ -149,7 +164,7 @@
             <br />
             <br />  
         </form>  
-<?php endif ?>
+    <?php endif ?>
 </div>
 <div class="row justify-content-center">
 <br />
@@ -181,7 +196,8 @@
                 <br />               
                 <span><?php if(isset($modified)) echo $modified; ?></span>   
                 <?php if(isset($usr_dat['admin']) && ($usr_dat['admin'] == 1)) : ?>
-                    <a href="comments_edit.php?commentid=<?=$datComment['commentid']?>&postid=<?=$postid?>">EDIT COMMENT </a> 
+                    <a href="comments_edit.php?commentid=<?=$datComment['commentid']?>
+                        &postid=<?=$postid?>">EDIT COMMENT </a> 
                 <?php endif ?>                    
                 </li>
             <hr>          

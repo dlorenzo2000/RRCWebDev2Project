@@ -187,7 +187,7 @@
 
             // if ($image_upload_detected) {         
                 
-                $image_filename = $_FILES['image']['name'];      
+                $image_filename = date("Y_m_d_H_i")."".$_FILES['image']['name'];  
         
                 $temporary_image_path = $_FILES['image']['tmp_name'];
         
@@ -276,10 +276,12 @@
             Photos: 
             <?php while ($datImage = $stmImage->fetch()): ?>
                 <img src="uploads/<?=$datImage['image_name']?>" 
-                class="thumb" alt="<?=$datImage['image_name'] ?>" />                      
+                    class="img-view" alt="<?=$datImage['image_name'] ?>" />                      
             <?php endwhile ?>              
-            <button type="submit" class="btn btn-secondary" name="delete_image" value="delete_image"
-                onclick="return confirm('Confirm delete this image?')">Delete image</button> 
+            <button type="submit" class="btn btn-secondary" 
+                name="delete_image" value="delete_image"
+                onclick="return confirm('Confirm delete this image?')"
+                >Delete image</button> 
         <?php endif ?>    
         <br />
         <label for="image">Upload food image:</label> 

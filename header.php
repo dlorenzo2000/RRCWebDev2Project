@@ -10,9 +10,7 @@
  *****************************************************************************/
 
     session_start();
-    require('connect.php');  
-    
-    //require_once('authenticate.php');  
+    require('connect.php');      
     require('library.php'); 
 
     if(isset($_SESSION['username'])){
@@ -39,7 +37,7 @@
 </head>
 <body>   
 <header>
-    <div class="row top-nav-links align-item-center">
+    <div class="row top-nav-links align-item-center header-body">
         <div class="col-sm-4">
             <a href="index.php">
                 <img src="images/foodzagram-logo-sm.png" class="top-logo"/>
@@ -84,5 +82,5 @@
         </div>
     </div>            
 </header> 
-<hr>
+<hr>   
 <div class="container">     

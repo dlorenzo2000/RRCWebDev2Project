@@ -22,8 +22,8 @@
 
     if($_POST && !empty(trim($_POST['username'])) && !empty(trim($_POST['pwd']))){
          
-        $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $pwd = (filter_input(INPUT_POST, 'pwd', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+        $username = trim(filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+        $pwd = trim(filter_input(INPUT_POST, 'pwd', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
         
         $qry = "SELECT * FROM User WHERE username = :username LIMIT 1";
         
@@ -35,16 +35,19 @@
 
         if($stm->rowCount() > 0 ){            
             $dat = $stm->fetch();
-            if(password_verify($pwd, $dat['pwd'])){ 
+            if(password_verify($pwd, $dat['pwd']) && $dat['active'] == 1){ 
                 $_SESSION['username'] = $dat['username'];
                 $_SESSION['userid'] = $dat['userid'];
                 $_SESSION['admin'] = $dat['admin'];
                 header("Location: home.php");
                 die;                
             }
-            else{           
-                $password_error ="* Invalid password. Try again.";          
-            } 
+            
+            if($dat['active'] == 0)        
+                $username_error ="* In-active user. Please signup for a new account.";     
+
+            if(!password_verify($pwd, $dat['pwd']) && $dat['active'] == 1)
+                $password_error = "* Invalid password. Try again.";
         }           
         else{  
             $username_error ="* Invalid username. Try again.";
@@ -58,12 +61,12 @@
         <label for="username">Username</label>
         <input type="text" name="username"
             value="<?php if(isset($_POST['username'])) echo $_POST['username']; ?>">
-        <span><?php if(isset($username_error)) echo $username_error; ?></span>   
+        <span class="error-message"><?php if(isset($username_error)) echo $username_error; ?></span>   
         <br />
         <br />
         <label for="pwd">Password</label>
-        <input type="password" name="pwd">    
-        <span><?php if(isset($password_error)) echo $password_error; ?></span>   
+        <input type="password" name="pwd" value="<?php if(isset($_POST['pwd'])) echo $_POST['pwd']; ?>">    
+        <span class="error-message"><?php if(isset($password_error)) echo $password_error; ?></span>   
         <br />
         <br />
         <button type="submit" class="btn btn-secondary">Login</button> 

@@ -21,24 +21,26 @@
         $stmActive->execute();
         $datActive = $stmActive->fetch(); 
 
-        $qryReviews = "  SELECT * 
-                        FROM post 
-                            left join restaurant on post.restaurantid = restaurant.restaurantid 
-                            left join foodcategory on foodcategory.categoryid = post.categoryid
-                            left join city on city.cityid = restaurant.cityid
-                            left join province on province.provinceid = restaurant.provinceid
-                            left join user on post.userid = user.userid
-                        where post.restaurantid = $restaurantid";
+        $qryReviews = " SELECT post.postid, foodcategory.category_name, restaurant.restaurant_name
+        , post.post_title, post.post_content, post.restaurant_rating, user.first_name
+        , restaurant.restaurantid, post.created_date, post.modified_date, images.image_name
+        , post.active
+                        FROM post                      
+                        INNER JOIN foodcategory ON foodcategory.categoryid = post.categoryid              
+                        INNER JOIN restaurant ON post.restaurantid = restaurant.restaurantid 
+                        LEFT JOIN images ON images.postid = post.postid 
+                        LEFT JOIN user on post.userid = user.userid
+                        where post.restaurantid = $restaurantid ORDER BY post.modified_date";
         
         $stmReviews = $db->prepare($qryReviews);        
         $stmReviews->execute();
 
         $qryRestaurant = "  SELECT * 
                             FROM restaurant  
-                            JOIN foodcategory ON foodcategory.categoryid = restaurant.categoryid
-                            JOIN city ON city.cityid = restaurant.cityid
-                            JOIN province ON province.provinceid = restaurant.provinceid
-                            WHERE restaurantid = $restaurantid";
+                            INNER JOIN foodcategory ON foodcategory.categoryid = restaurant.categoryid
+                            INNER JOIN city ON city.cityid = restaurant.cityid
+                            INNER JOIN province ON province.provinceid = restaurant.provinceid
+                            WHERE restaurantid = $restaurantid"; 
 
         $stmRestaurant = $db->prepare($qryRestaurant);
         $stmRestaurant->execute();
@@ -91,7 +93,12 @@
                         date('F d, Y h:i A', strtotime($datReviews['modified_date'])); ?>    
                     <?php if(isset($display_date)) echo $display_date; ?>                         
                     <a href="review_read.php?postid=<?= $datReviews['postid']?>">READ COMMENTS</a>                           
-                </h6>                     
+                </h6>   
+                <?php if($datReviews['image_name']):?>
+                    Photos:  
+                    <img src="uploads/<?=$datReviews['image_name']?>" 
+                        class="thumb" alt="<?=$datReviews['image_name'] ?>" /> 
+                <?php endif ?>                    
             </li> 
             <hr>
         <?php endwhile ?>    

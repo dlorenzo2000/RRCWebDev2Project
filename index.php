@@ -13,11 +13,12 @@
 ?>
  
 <h1>Main</h1>
-<div class="row">
+<div class="row index-body">
     <div class="col-md-4">
         <a href="restaurant.php">Restaurants</a>
     </div>    
         <a href="reviews.php">Reviews</a>
     </div>    
-</div>  
+</div> 
+
 <?php require_once('footer.php'); ?>

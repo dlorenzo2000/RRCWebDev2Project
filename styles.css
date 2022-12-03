@@ -8,9 +8,14 @@
  * Purpose: Add styling for the site.
  *****************************************************************************/
 
- body{
+.header-body{
     background-color: #f6e5dd;
+    margin-bottom: -16px;
 } 
+
+.index-body{
+    height: 15em;
+}
 
 ul{
     list-style: none;    
@@ -31,5 +36,17 @@ ul{
 }
 
 .thumb{
-    height: 75px;
+    height: 75px; 
+}
+
+.img-view{
+    width: 40em;
+}
+
+.copyright{
+    padding-left: 2.6em;
+}
+
+.error-message{
+    color: red;
 }
