@@ -5,53 +5,53 @@
  * Course: Web Development - 2008 (228566)
  * Assignment: Final Project
  * Created: Nov 20, 2022
- * Updated: Nov 21, 2022 
+ * Updated: Dec 04, 2022 
  * Purpose: Page for viewing whole review and comments posted by others
  ******************************************************************************/
 
     require_once('header.php');   
-
+    
     if(isset($usr_dat))    
-        $username = $usr_dat['first_name'];
+        $username = $usr_dat['first_name'];    
  
-    if($_SERVER['REQUEST_METHOD'] === "POST"){
+    if(isset($_POST['submit'])){
         if($_POST && empty(trim($_POST['comment']))){
             $comment_error = "* Comment form cannot be blank."; 
         }
-        else{ 
-            if($usr_dat = CheckLogin($db)){
-                $userid = $usr_dat['userid'];
-            }        
-            else{
-                $userid = 0;
-            }
- 
-            // if(isset($_POST['verify'])){
-            //     $sessionCaptcha = $_SESSION['captcha'];
-            //     $formCaptcha = $_POST['captcha'];
-
-            //     if($sessionCaptcha == $formCaptcha){
-            //         $thsadfasdfadsfis->execute();
-                    
-            //     }
-            //     else
-            //         $captcha_error = "Could not verify you are human.";
-            // }
-
-            $comment = trim(filter_input(INPUT_POST, 'comment'
-                , FILTER_SANITIZE_FULL_SPECIAL_CHARS));
-            $postid = filter_input(INPUT_POST, 'postid'
-                , FILTER_SANITIZE_FULL_SPECIAL_CHARS);                    
-        
-            $qryComment = "INSERT INTO comment (comment, userid, postid)
-                VALUES (:comment, :userid, :postid)";
-
-            $stmComment = $db->prepare($qryComment);
-            $stmComment->bindValue(':comment', $comment);
-            $stmComment->bindValue(':userid', $userid);
-            $stmComment->bindValue(':postid', $postid);
-            $stmComment->execute();  
+        if($_POST && empty(trim($_POST['captcha']))){
+            $captcha_error = "* Field cannot be blank."; 
         }
+
+        
+        if($_POST && !(empty(trim($_POST['comment']))) && !empty(trim($_POST['captcha']))){             
+            $sessionCaptcha = $_SESSION['captcha'];
+            if($usr_dat = CheckLogin($db)){
+                    $userid = $usr_dat['userid'];                
+                }        
+                else{
+                    $userid = 0;
+                }
+ 
+                $formCaptcha = $_POST['captcha'];
+               
+                if($sessionCaptcha == $formCaptcha){                    
+                    $comment = trim(filter_input(INPUT_POST, 'comment'
+                        , FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+                    $postid = filter_input(INPUT_POST, 'postid'
+                        , FILTER_SANITIZE_FULL_SPECIAL_CHARS);                    
+                
+                    $qryComment = "INSERT INTO comment (comment, userid, postid)
+                        VALUES (:comment, :userid, :postid)";
+
+                    $stmComment = $db->prepare($qryComment);
+                    $stmComment->bindValue(':comment', $comment);
+                    $stmComment->bindValue(':userid', $userid);
+                    $stmComment->bindValue(':postid', $postid);
+                    $stmComment->execute();                  
+                }
+                else
+                    $captcha_error = "* Could not verify you're human. Try try again."; 
+            }
     }           
     
     // get the postid from the selected review to output to the page on load
@@ -103,7 +103,7 @@
      
         $stmEditCategory = $db->prepare($qryEditCategory);
         $stmEditCategory->execute();
-        $datEditCategory = $stmEditCategory->fetch();     
+        $datEditCategory = $stmEditCategory->fetch();             
         
         $qryComment = " SELECT * 
                         FROM comment 
@@ -115,7 +115,8 @@
         $stmComment = $db->prepare($qryComment);
         $stmComment->execute();             
      }     
-?> 
+?>  
+
 
 <div class="row">
     <h1>Reading review</h1>
@@ -149,17 +150,18 @@
                 Comment
             </label>
             <input type="text" size="125" name="comment" 
-                value="<?php if(isset($comment)): ?><?php echo $comment;?><?php endif ?>">
-            <span>
+                value="<?php if(isset($_POST['comment'])): ?><?php echo $_POST['comment'];?><?php endif ?>">
+            <span class="error-message">
             <?php if(isset($comment_error)) echo $comment_error; ?>
             </span> 
             <br />
             <br />
-            Prove you are human: <input type="text" name="captcha"><img src = "captcha.php">        
-            <button type="submit" class="btn btn-secondary" 
-                name="verify" id="verify" value="verify">Verify</button> 
+            Prove you are human: <input type="text" name="captcha"><img src="captcha.php">  
+            <span class="error-message">
+                <?php if(isset($captcha_error)) echo $captcha_error; ?>
+            </span> 
             <br />
-            <button type="submit" class="btn btn-secondary" id="submit">Add</button>         
+            <button type="submit" class="btn btn-secondary" id="submit" name="submit">Submit</button>         
             <br />
             <br />
             <br />  

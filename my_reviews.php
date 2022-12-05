@@ -36,8 +36,8 @@
         }    
 
         $qryPost = "SELECT post.postid, foodcategory.category_name, restaurant.restaurant_name
-            , post.post_title, post.post_content, post.restaurant_rating
-            , restaurant.restaurantid, post.created_date, post.modified_date, images.image_name
+            , post.post_title, post.post_content, post.restaurant_rating, images.image_name
+            , restaurant.restaurantid, post.created_date, post.modified_date, images.image_name_thumb
                     FROM post                      
                     INNER JOIN foodcategory ON foodcategory.categoryid = post.categoryid              
                     INNER JOIN restaurant ON post.restaurantid = restaurant.restaurantid 
@@ -88,10 +88,10 @@
                     <p><?= $datPost['post_content'] ?></p>   
                     <a href="review_read.php?postid=<?= $datPost['postid']?>">READ COMMENTS</a> 
                     <br />        
-                    <?php if($datPost['image_name']):?>
+                    <?php if(isset($datPost['image_name_thumb'])):?>
                         Photos:  
-                        <img src="uploads/<?=$datPost['image_name']?>" 
-                            class="thumb" alt="<?=$datPost['image_name'] ?>" /> 
+                        <img src="uploads/<?=$datPost['image_name_thumb']?>" 
+                            class="" alt="<?=$datPost['image_name_thumb'] ?>" /> 
                     <?php endif ?>      
                 </li>
                 <hr>

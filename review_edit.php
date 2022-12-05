@@ -5,7 +5,7 @@
  * Course: Web Development - 2008 (228566)
  * Assignment: Final Project
  * Created: Nov 15, 2022
- * Updated: Nov 30, 2022 
+ * Updated: Dec 04, 2022 
  * Purpose: Handles the update review process.
  *****************************************************************************/
 
@@ -47,86 +47,121 @@
         // get the postid from the selected review to output to the page on load
         if(isset($_GET['postid'])){
             $postid = filter_input(INPUT_GET, 'postid'
-                , FILTER_SANITIZE_NUMBER_INT);    
-                
-            $qry = "SELECT post.postid, foodcategory.category_name, restaurant.restaurant_name
-                , post.post_title, post.post_content, restaurant.restaurantid, post.restaurant_rating
-                , post.created_date, post.modified_date, images.image_name, post.active
-                    FROM post                      
-                    INNER JOIN foodcategory ON foodcategory.categoryid = post.categoryid              
-                    INNER JOIN restaurant ON post.restaurantid = restaurant.restaurantid 
-                    LEFT JOIN images ON images.postid = $postid
-                    WHERE post.active = $active_status AND post.postid = $postid LIMIT 1";
-
-            $stm = $db->prepare($qry);            
-            $stm->execute();
-
-            $dat = $stm->fetch();
-
-            $qryImage ="SELECT * FROM images WHERE images.postid = $postid LIMIT 5";
-            $stmImage = $db->prepare($qryImage);
-            $stmImage->execute();           
-
-            $qryEditCategory = "SELECT * FROM foodcategory JOIN post 
-                WHERE post.categoryid = foodcategory.categoryid 
-                AND post.postid = $postid LIMIT 1";
-
-            $stmEditCategory = $db->prepare($qryEditCategory);
-            $stmEditCategory->execute();
-            $datEditCategory = $stmEditCategory->fetch();            
-        }         
-
-        if($_POST && $_POST['delete_image']){
-            $postid = filter_input(INPUT_POST, 'postid'
-            , FILTER_SANITIZE_NUMBER_INT);   
-             
-            $qry = "SELECT * FROM images WHERE images.postid = $postid LIMIT 5";
-            $stm = $db->prepare($qry);
-            $stm->execute();    
-
-            $stm = $db->prepare($qry);            
-            $stm->execute();
-
-            $dat = $stm->fetch();
-           
-            $path = "uploads/".$dat['image_name'];
-            unlink($path);     
- 
-            $qryDelete="DELETE FROM images WHERE postid = $postid LIMIT 1";
-            $stmDelete=$db->prepare($qryDelete);
-            $stmDelete->execute(); 
-        }   
-
-        if($_POST && ($_POST['delete'])){ 
-            $postid = filter_input(INPUT_POST, 'postid'
-                , FILTER_SANITIZE_NUMBER_INT);
-            $qry="UPDATE post 
-                  SET active = 0 
-                  WHERE postid = $postid"; 
-
-            $stm=$db->prepare($qry);        
-            $stm->execute(); 
-
-            header("Location: my_reviews.php");
-            exit;
+                , FILTER_SANITIZE_NUMBER_INT);   
         }
-
-        if($_POST && ($_POST['activate'])){ 
+        else{
             $postid = filter_input(INPUT_POST, 'postid'
-                , FILTER_SANITIZE_NUMBER_INT);
+            , FILTER_SANITIZE_NUMBER_INT);  
+        }   
+                
+        $qry = "SELECT post.postid, foodcategory.category_name, restaurant.restaurant_name
+            , post.post_title, post.post_content, restaurant.restaurantid, post.restaurant_rating
+            , post.created_date, post.modified_date, images.image_name, post.active
+            , images.image_name_thumb
+                FROM post                      
+                INNER JOIN foodcategory ON foodcategory.categoryid = post.categoryid              
+                INNER JOIN restaurant ON post.restaurantid = restaurant.restaurantid 
+                LEFT JOIN images ON images.postid = $postid
+                WHERE post.active = $active_status AND post.postid = $postid LIMIT 1";
 
-            $qry="UPDATE post 
-                  SET active = 1 
-                  WHERE postid = $postid";
+        $stm = $db->prepare($qry);            
+        $stm->execute();
+
+        $dat = $stm->fetch();
+
+        $qryImage ="SELECT * FROM images WHERE images.postid = $postid LIMIT 5";
+        $stmImage = $db->prepare($qryImage);
+        $stmImage->execute();           
+
+        $qryEditCategory = "SELECT * FROM foodcategory JOIN post 
+            WHERE post.categoryid = foodcategory.categoryid 
+            AND post.postid = $postid LIMIT 1";
+
+        $stmEditCategory = $db->prepare($qryEditCategory);
+        $stmEditCategory->execute();
+        $datEditCategory = $stmEditCategory->fetch();    
+        
+        $qryEditRestaurant = "SELECT * 
+        FROM restaurant JOIN post on post.restaurantid = restaurant.restaurantid
+        WHERE post.postid = $postid LIMIT 1";
+
+        $stmEditRestaurant = $db->prepare($qryEditRestaurant);
+        $stmEditRestaurant->execute();
+        $datEditRestaurant = $stmEditRestaurant->fetch();          
+      
+        if($_POST && empty(trim($_POST['post_title'])))
+            $title_error = "* Title field cannot be blank.";
+
+        if($_POST && empty(trim($_POST['post_content'])))
+            $post_content_error = "* Post text area cannot be blank.";
+
+        if($_POST && empty($_POST['restaurant_rating']))
+            $rating_error = "* You must rate the restaurant from 1 to 10.";
+
+        if($_POST && empty($_POST['restaurantid']))
+            $restaurant_error = "* You must select the restaurant name.";
+
+        if($_POST && empty($_POST['categoryid']))
+            $category_error = "* You must select a cateogry.";
+
+        if($_POST && !empty(trim($_POST['post_title'])) 
+            && !empty(trim($_POST['post_content'])) 
+            && !empty($_POST['restaurant_rating'])
+            && !empty($_POST['restaurantid']) 
+            && !empty($_POST['categoryid'])){
+
+            if($_POST && $_POST['delete_image']){
+                $postid = filter_input(INPUT_POST, 'postid'
+                , FILTER_SANITIZE_NUMBER_INT);   
                     
-            $stm=$db->prepare($qry);        
-            $stm->execute(); 
+                $qry = "SELECT * FROM images WHERE images.postid = $postid LIMIT 5";
+                $stm = $db->prepare($qry);
+                $stm->execute();    
+    
+                $stm = $db->prepare($qry);            
+                $stm->execute();
+    
+                $dat = $stm->fetch();
+                
+                $path = "uploads/".$dat['image_name'];
+                unlink($path);     
+        
+                $qryDelete="DELETE FROM images WHERE postid = $postid LIMIT 1";
+                $stmDelete=$db->prepare($qryDelete);
+                $stmDelete->execute(); 
+                header("Location: my_reviews.php");
+                exit;
+            }   
+    
+            if($_POST && ($_POST['delete'])){ 
+                $postid = filter_input(INPUT_POST, 'postid'
+                    , FILTER_SANITIZE_NUMBER_INT);
+                $qry="UPDATE post 
+                        SET active = 0 
+                        WHERE postid = $postid"; 
+    
+                $stm=$db->prepare($qry);        
+                $stm->execute(); 
+    
+                header("Location: my_reviews.php");
+                exit;
+            }
+    
+            if($_POST && ($_POST['activate'])){ 
+                $postid = filter_input(INPUT_POST, 'postid'
+                    , FILTER_SANITIZE_NUMBER_INT);
+    
+                $qry="UPDATE post 
+                        SET active = 1 
+                        WHERE postid = $postid";
+                        
+                $stm=$db->prepare($qry);        
+                $stm->execute(); 
+    
+                header("Location: my_reviews.php");
+                exit;
+            } 
 
-            header("Location: my_reviews.php");
-            exit;
-        }        
-
-        if($_POST){
             $postid = filter_input(INPUT_POST, 'postid'
                 , FILTER_SANITIZE_NUMBER_INT);
             $post_title = trim(filter_input(INPUT_POST, 'post_title'
@@ -185,27 +220,57 @@
             $image_upload_detected = isset($_FILES['image']) && ($_FILES['image']['error'] === 0);
             $upload_error_detected = isset($_FILES['image']) && ($_FILES['image']['error'] > 0);
 
-            // if ($image_upload_detected) {         
-                
-                $image_filename = date("Y_m_d_H_i")."".$_FILES['image']['name'];  
+            if ($image_upload_detected) {         
+                $image_filename = date("Y_m_d_H_i").'_'.$_FILES['image']['name'];                  
         
                 $temporary_image_path = $_FILES['image']['tmp_name'];
         
                 $new_image_path = file_upload_path($image_filename);
+
+                $fileName = pathinfo($image_filename, PATHINFO_FILENAME);
         
-                if (file_is_an_image($temporary_image_path, $new_image_path)) 
-                {
-                    $qryImage = "INSERT INTO images (image_name, postid)
-                                    VALUES(:image_name, :postid)";
+                if (file_is_an_image($temporary_image_path, $new_image_path)){ 
+                    move_uploaded_file($temporary_image_path, $new_image_path);
+
+                    // get the extension of the file name            
+                    $ext = pathinfo($image_filename, PATHINFO_EXTENSION);
+                                  
+                    $image_name = new \Gumlet\ImageResize($new_image_path);  
+
+                    // create medium size copy of image 700px width
+                    $image_name->resizeToWidth(700);
+    
+                    $newName = 'uploads\\'.$fileName.'_medium.'.$ext; 
+                    $image_name->save($newName); 
+                                
+                    // create thumbnail size of image 75px width 
+                    $image_thumbnail = new \Gumlet\ImageResize($new_image_path);
+                    $image_thumbnail->resizeToWidth(75);
+    
+                    // create copied file with thumbnail name
+                    $newThumbName = 'uploads\\'.$fileName.'_thumb.'.$ext; 
+                    $image_thumbnail->save($newThumbName); 
+
+                    $image_medium = $fileName.'_medium.'.$ext; 
+                    $image_thumb = $fileName.'_thumb.'.$ext; 
+                   
+                    $qryImage = "INSERT INTO images (image_name, image_name_thumb, postid)
+                                    VALUES(:image_name, :image_name_thumb, :postid)";
 
                     $stmImage = $db->prepare($qryImage);
-                    $stmImage->bindValue(':image_name', $image_filename, PDO::PARAM_STR);
+                    $stmImage->bindValue(':image_name', $image_medium, PDO::PARAM_STR);
+                    $stmImage->bindValue(':image_name_thumb', $image_thumb, PDO::PARAM_STR);
                     $stmImage->bindValue(':postid', $postid, PDO::PARAM_INT);
                     $stmImage->execute();
 
-                    move_uploaded_file($temporary_image_path, $new_image_path);           
+                    // remove the original sized photo
+                    $originalPath = "uploads/".$image_filename;
+                    unlink($originalPath);
+                      
+                    header("Location: my_reviews.php");
+                    exit; 
                 }
-            // }    
+            }    
             /////////////////////////////////////////////////////////////////////////////////////////////////////
 
             header("Location: my_reviews.php");
@@ -219,16 +284,26 @@
     <form method="post" action="review_edit.php" enctype="multipart/form-data"> 
         <input type="hidden" name="postid" value="<?=$dat['postid']?>">
         <label for="post_title">Title</label>        
-        <input type="text" name="post_title" value="<?=$dat['post_title']?>">
+        <input type="text" name="post_title" value
+            ="<?php if(isset($dat)) echo $dat['post_title'];
+                elseif(isset($_POST['post_title'])) echo($_POST['post_title']); ?>">
+        <span class="error-message"><?php if(isset($title_error)) 
+            echo $title_error; ?>
+        </span>   
         <br />
-        <textarea name="post_content" rows="10" cols="94"><?=$dat['post_content']?>
+        <textarea name="post_content" rows="10" cols="94" value
+            ="<?php if(isset($dat)) echo $dat['post_content'];
+                elseif(isset($_POST['post_content'])) 
+                echo($_POST['post_content']); ?>"><?php if(isset($dat)) 
+                echo $dat['post_content'];
+                elseif(isset($_POST['post_content'])) echo($_POST['post_content']); ?>
         </textarea>
+        <span class="error-message"><?php if(isset($post_content_error)) 
+            echo $post_content_error; ?>
+        </span> 
         <br />
         <label for="restaurant_rating">Rating </label>
-        <select name="restaurant_rating">
-            <option hidden disabled selected value> 
-                -- select an option -- 
-            </option>
+        <select name="restaurant_rating"> 
             <option selected value="<?= $dat['restaurant_rating']?>">
                 <?= $dat['restaurant_rating']?>
             </option>
@@ -237,28 +312,25 @@
                     <?=$i ?>
                 </option>
             <?php endfor ?>
+            <span class="error-message"><?php if(isset($rating_error)) echo $rating_error; ?></span>   
         </select> 
-        <label for="restaurantid">Restaurant</label>
-        <select name="restaurantid">
-            <option hidden disabled selected value> 
-                -- select an option -- 
-            </option>             
-            <?php if($stmRestaurant->rowCount() > 0): ?>                
-                <option selected value="<?= $dat['restaurantid'] ?>">
-                    <?= $dat['restaurant_name'] ?>
-                </option>      
-                <option value="<?= $dat['restaurantid'] ?>">
-                    <?= $dat['restaurant_name'] ?> 
-                </option> 
+        <label for="restaurantid">Restaurant</label> 
+        <select name="restaurantid"> 
+            <?php if($stmRestaurant->rowCount() > 0): ?>    
+                <option selected value="<?= $datEditRestaurant['restaurantid'] ?>">
+                    <?= $datEditRestaurant['restaurant_name'] ?>
+                </option>  
+                <?php while($datRestaurant = $stmRestaurant->fetch()): ?>
+                    <option value="<?= $datRestaurant['restaurantid'] ?>">
+                        <?=$datRestaurant['restaurant_name'] ?>
+                    </option>                    
+                <?php endwhile ?>
             <?php endif ?>
         </select> 
         <a href="restaurant.php">Add restaurant</a>
         <br />
         <label for="categoryid">Category </label>    
-        <select name="categoryid">
-            <option hidden disabled selected value>
-                    -- select an option -- 
-            </option>
+        <select name="categoryid"> 
             <?php if($stmCategory->rowCount() > 0): ?>
                 <option selected value="<?= $datEditCategory['categoryid'] ?>">
                     <?= $datEditCategory['category_name'] ?> 
@@ -281,11 +353,15 @@
             <button type="submit" class="btn btn-secondary" 
                 name="delete_image" value="delete_image"
                 onclick="return confirm('Confirm delete this image?')"
-                >Delete image</button> 
+                >Delete image
+            </button> 
         <?php endif ?>    
         <br />
-        <label for="image">Upload food image:</label> 
-        <input type="file" name="image" id="image" /> 
+        <?php if(!(isset($dat['image_name']))): ?>
+            <label for="image">Upload food image:</label> 
+            (gif, jpg, jpeg, png files only)
+            <input type="file" name="image" id="image" /> 
+        <?php endif?>
         <br />
         <button type="submit" class="btn btn-secondary" id="submit">Save</button>  
         <button type="button" class="btn btn-secondary" onclick="history.back()">Cancel</button>

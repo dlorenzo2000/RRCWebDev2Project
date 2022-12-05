@@ -5,7 +5,7 @@
  * Course: Web Development - 2008 (228566)
  * Assignment: Final Project
  * Created: Nov 12, 2022
- * Updated: Dec 3, 2022 
+ * Updated: Dec 2, 2022 
  * Purpose: Handles the insert review propcess.
  *****************************************************************************/
 
@@ -56,7 +56,7 @@
             && !empty($_POST['restaurant_rating'])
             && !empty($_POST['restaurantid']) 
             && !empty($_POST['categoryid'])){
- 
+
             $post_title = trim(filter_input(INPUT_POST, 'post_title'
                 , FILTER_SANITIZE_FULL_SPECIAL_CHARS));
             $post_content = trim(filter_input(INPUT_POST, 'post_content'
@@ -70,35 +70,29 @@
                     , FILTER_SANITIZE_NUMBER_INT));
 
             $userid = intval($usr_dat['userid']);
-     
-            $qry = "INSERT INTO post (post_title, post_content, userid, restaurant_rating, 
-                        restaurantid, categoryid)     
-                    VALUES(:post_title, :post_content, :userid, :restaurant_rating, 
-                        :restaurantid, :categoryid)";
+  
+                   
+                $qry = "INSERT INTO post (post_title, post_content, userid, restaurant_rating, 
+                            restaurantid, categoryid)     
+                        VALUES(:post_title, :post_content, :userid, :restaurant_rating, 
+                            :restaurantid, :categoryid)";
 
-            $stm = $db->prepare($qry);
+                $stm = $db->prepare($qry); 
+                $stm->bindValue(':post_title', $post_title, PDO::PARAM_STR);
+                $stm->bindValue(':post_content', $post_content, PDO::PARAM_STR);
+                $stm->bindvalue(':restaurant_rating', $restaurant_rating, PDO::PARAM_INT);
+                $stm->bindvalue(':restaurantid', $restaurantid, PDO::PARAM_INT);
+                $stm->bindvalue(':categoryid', $categoryid, PDO::PARAM_INT);
+                $stm->bindValue(':userid', $userid, PDO::PARAM_INT); 
 
-            $stm->bindValue(':post_title', $post_title, PDO::PARAM_STR);
-            $stm->bindValue(':post_content', $post_content, PDO::PARAM_STR);
-            $stm->bindvalue(':restaurant_rating', $restaurant_rating, PDO::PARAM_INT);
-            $stm->bindvalue(':restaurantid', $restaurantid, PDO::PARAM_INT);
-            $stm->bindvalue(':categoryid', $categoryid, PDO::PARAM_INT);
-            $stm->bindValue(':userid', $userid, PDO::PARAM_INT);
-
-            $stm->execute();    
-            
             //get the postid of this latest post assign it to the session 
             $qry_postid = "SELECT * from post where postid=(select MAX(postid) FROM post LIMIT 1)";
             $stm_postid = $db->prepare($qry_postid);
             $stm_postid->execute();
             
             $postid = $stm_postid->fetch();
-            $_SESSION['postid'] = $postid['postid'];
-            
-            //header("Location: my_reviews.php");
-            //exit;
-
-            //////////////////////////////////////////////////////////////////////////////////////////////////////// 
+            $_SESSION['postid'] = $postid['postid']; 
+           
             function file_upload_path($original_filename, $upload_subfolder_name = 'uploads') {
                 $current_folder = dirname(__FILE__);
                 
@@ -108,8 +102,8 @@
             }
         
             function file_is_an_image($temporary_path, $new_path) {                
-                $allowed_mime_types      = ['image/gif', 'image/jpeg', 'image/png', 'application/pdf'];
-                $allowed_file_extensions = ['gif', 'jpg', 'jpeg', 'png', 'pdf'];
+                $allowed_mime_types      = ['image/gif', 'image/jpeg', 'image/png'];
+                $allowed_file_extensions = ['gif', 'jpg', 'jpeg', 'png'];
                 
                 $actual_file_extension   = pathinfo($new_path, PATHINFO_EXTENSION);
                 $actual_mime_type        = mime_content_type($temporary_path);
@@ -124,30 +118,62 @@
             $upload_error_detected = isset($_FILES['image']) && ($_FILES['image']['error'] > 0);
 
             if ($image_upload_detected) {       
-                $image_filename = $_FILES['image']['name'].''.date("Y_m_d.H_i");     
+                $image_filename = date("Y_m_d_H_i").'_'.$_FILES['image']['name'];                  
         
                 $temporary_image_path = $_FILES['image']['tmp_name'];
         
                 $new_image_path = file_upload_path($image_filename);
+
+                $fileName = pathinfo($image_filename, PATHINFO_FILENAME);
         
-                if (file_is_an_image($temporary_image_path, $new_image_path)){
-                    $qryImage = "INSERT INTO images (image_name, postid)
-                                    VALUES(:image_name, :postid)";
+                if (file_is_an_image($temporary_image_path, $new_image_path)){ 
+                    move_uploaded_file($temporary_image_path, $new_image_path);
+
+                    // get the extension of the file name            
+                    $ext = pathinfo($image_filename, PATHINFO_EXTENSION);
+                                  
+                    $image_name = new \Gumlet\ImageResize($new_image_path);  
+
+                    // create medium size copy of image 500px width
+                    $image_name->resizeToWidth(500);
+    
+                    $newName = 'uploads\\'.$fileName.'_medium'.$ext; 
+                    $image_name->save($newName); 
+                                
+                    // create thumbnail size of image 75px width 
+                    $image_thumbnail = new \Gumlet\ImageResize($new_image_path);
+                    $image_thumbnail->resizeToWidth(75);
+    
+                    // create copied file with thumbnail name
+                    $newThumbName = 'uploads\\'.$fileName.'_thumb.'.$ext; 
+
+                    $image_thumb = $fileName.'_thumb.'.$ext; 
+
+                    $image_thumbnail->save($newThumbName); 
+
+                    $qryImage = "INSERT INTO images (image_name, image_name_thumb, postid)
+                                    VALUES(:image_name, :image_name_thumb, :postid)";
 
                     $stmImage = $db->prepare($qryImage);
                     $stmImage->bindValue(':image_name', $image_filename, PDO::PARAM_STR);
+                    $stmImage->bindValue(':image_name_thumb', $image_thumb, PDO::PARAM_STR);
                     $stmImage->bindValue(':postid', $postid['postid'], PDO::PARAM_INT);
                     $stmImage->execute();
-
-                    move_uploaded_file($temporary_image_path, $new_image_path);           
+                      
+                    header("Location: my_reviews.php");
+                    exit; 
                 }
-                else
-                    $image_upload_error = "* ONLY gif, jpg, jpeg, png, and pdf images allowed.";
-            }    
-
-            $_POST = array();
-            /////////////////////////////////////////////////////////////////////////////////////////////////////
-        } 
+                else{
+                    $image_upload_error = "* ONLY gif, jpg, jpeg, png, and pdf images allowed";
+                }
+            }  
+            else{
+                $stm->execute(); 
+                
+                header("Location: my_reviews.php");
+                exit;
+            }        
+       } 
     }
 ?>
 
@@ -162,8 +188,8 @@
         </span>   
         <br />
         <textarea name="post_content" rows="10" cols="94" value
-            ="<?php if(isset($_POST['post_content'])) 
-            echo($_POST['post_content']); ?>"><?php if(isset($_POST['post_content'])) 
+            ="<?php if(isset($_POST['post_content'])) echo
+                ($_POST['post_content']); ?>"><?php if(isset($_POST['post_content'])) 
                 echo($_POST['post_content']); ?>
         </textarea>
         <span class="error-message"><?php if(isset($post_content_error)) 
@@ -176,26 +202,11 @@
             <option hidden disabled selected value> 
                 -- select an option -- 
             </option> 
-            <option <?php if (isset($_POST['restaurant_rating']) 
-                && $_POST['restaurant_rating']== 1) echo "selected";?>>1</option>
-            <option <?php if (isset($_POST['restaurant_rating']) 
-                && $_POST['restaurant_rating']== 2) echo "selected";?>>2</option>
-            <option <?php if (isset($_POST['restaurant_rating']) 
-                && $_POST['restaurant_rating']== 3) echo "selected";?>>3</option>
-            <option <?php if (isset($_POST['restaurant_rating']) 
-                && $_POST['restaurant_rating']== 4) echo "selected";?>>4</option>
-            <option <?php if (isset($_POST['restaurant_rating']) 
-                && $_POST['restaurant_rating']== 5) echo "selected";?>>5</option>
-            <option <?php if (isset($_POST['restaurant_rating']) 
-                && $_POST['restaurant_rating']== 6) echo "selected";?>>6</option>
-            <option <?php if (isset($_POST['restaurant_rating'])
-                && $_POST['restaurant_rating']== 7) echo "selected";?>>7</option>
-            <option <?php if (isset($_POST['restaurant_rating']) 
-                && $_POST['restaurant_rating']== 8) echo "selected";?>>8</option>
-            <option <?php if (isset($_POST['restaurant_rating']) 
-                && $_POST['restaurant_rating']== 9) echo "selected";?>>9</option>
-            <option <?php if (isset($_POST['restaurant_rating']) 
-                && $_POST['restaurant_rating']== 10) echo "selected";?>>10</option>  
+            <?php for($i=1; $i<=10; $i++): ?>
+                <option <?php if (isset($_POST['restaurant_rating']) 
+                    && $_POST['restaurant_rating']== $i) echo "selected";?>><?= $i ?>
+                </option>            
+            <?php endfor ?>
         </select> 
         <span class="error-message"><?php if(isset($rating_error)) echo $rating_error; ?></span>   
         <label for="restaurantid">Restaurant</label>
@@ -208,9 +219,7 @@
                     <?php echo '<option value="'.$dat['restaurantid'].'"'.($_POST['restaurantid']
                         ==$dat['restaurantid']?' selected="selected"':'').'>'
                         .$dat['restaurant_name'].'</option>'; ?>
-                <?php endwhile ?>
-
-
+                <?php endwhile ?> 
             <?php endif ?>
         </select>
         <span class="error-message"><?php if(isset($restaurant_error)) 
@@ -237,7 +246,7 @@
         <a href="category.php">Add category</a>
         <br />
         <label for="image">Upload food image</label>  
-        (gif, jpg, jpeg, png, and pdf files only)
+        (gif, jpg, jpeg, png files only)
         <input type="file" name="image" id="image" /> 
         <span class="error-message"><?php if(isset($image_upload_error)) 
             echo $image_upload_error ?>

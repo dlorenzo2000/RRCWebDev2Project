@@ -11,7 +11,7 @@
 
     session_start();
     require('connect.php');      
-    require('library.php'); 
+    require('library.php');  
 
     if(isset($_SESSION['username'])){
         $logout_link = "Logout";
