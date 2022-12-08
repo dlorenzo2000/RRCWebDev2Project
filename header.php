@@ -5,7 +5,7 @@
  * Course: Web Development - 2008 (228566)
  * Assignment: Final Project
  * Created: Nov 12, 2022
- * Updated: Nov 15, 2022 
+ * Updated: Dec 08, 2022 
  * Purpose: Header found on every page.
  *****************************************************************************/
 
@@ -61,12 +61,12 @@
                             && ($usr_dat['admin'] == 1)) echo "Dashboard"; ?> </a>
                     </li> 
                     <li class="top-nav-li">
-                        <form action="#" class="top-nav-search">
-                            <input type="text">
-                        </form>
-                        <a href="search.php">
+                        <form action="search_results.php?search_words=" class="top-nav-search">
+                            <input type="text" name="search_words">                        
+                        <a href="search_results.php?search_words=">
                             <button class="btn btn-secondary">Search</button>
                         </a>
+                        </form>
                     </li>   
                     <li class="top-nav-li">         
                         <?php if(isset($_SESSION['username'])): ?>

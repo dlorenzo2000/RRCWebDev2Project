@@ -116,8 +116,7 @@
         $stmComment->execute();             
      }     
 ?>  
-
-
+ 
 <div class="row">
     <h1>Reading review</h1>
     <br />

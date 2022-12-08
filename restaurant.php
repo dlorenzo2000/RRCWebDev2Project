@@ -82,7 +82,7 @@
         Restaurant name
     </label>
     <input type="text" name="restaurant-name">
-    <span>
+    <span class="error-message">
         <?php if(isset($restaurant_name_error)) echo $restaurant_name_error; ?>
     </span> 
     <br />
@@ -90,7 +90,7 @@
         Address
     </label>
     <input type="text" name="restaurant-address" size=100>
-    <span>
+    <span class="error-message">
         <?php if(isset($restaurant_address_error)) echo $restaurant_address_error; ?>
     </span>     
     <br/>
